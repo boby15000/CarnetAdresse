@@ -20,6 +20,21 @@ class AuthentificationController extends AbstractController
     private $result = null;
 
 
+ /**
+     * Page d'accueil.
+     * 
+     * @Route("/", name="home")
+     * @return Symfony\Component\HttpFoundation\Response;
+     */
+    public function home()
+    {
+        return $this->redirectToRoute('login');
+    }
+
+
+
+/**************************************************************************************************************************/
+
 
 
     /**
