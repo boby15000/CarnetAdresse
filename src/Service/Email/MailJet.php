@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Email;
 
 use Mailjet\Client;
 use \Mailjet\Resources;

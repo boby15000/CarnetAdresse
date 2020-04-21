@@ -4,8 +4,8 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Entity\demandebyMail;
-use App\Service\MailJet;
-use App\Service\Message;
+use App\Service\Email\MailJet;
+use App\Service\Email\Message;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment;
 

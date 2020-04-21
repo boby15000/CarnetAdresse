@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+<div class ="row mt-4">
+	<div class="d-none d-md-block col-md-6 offset-md-1">
+		<blockquote class="blockquote">
+  			<span class="display-4"><u>Bienvenue sur Carnet D'adresse.</u></span>
+  				<p class="h3">Ce site permet à chacun de retrouver facilement ses contact.</p>
+  		</blockquote>
+
+  		<!-- Affichage message après inscription -->
+		{% if inscriptionSuccess is defined %}
+			<div class="alert alert-success" role="alert">Merci de vous êtes inscrit. vous pouvez désormais vous connecter.</div>
+		{% endif %}
+    </div>
+
+    <div class="col-12 col-sm-12 col-md-3" style="">
+    	{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+    		<blockquote class="blockquote">
+				<p class="mb-0">Vous êtes authentifié sous l'adresse mail : {{ app.user.email }}</p>
+				<p class="mb-0">Votre carnet contient {{ nbrContacts }} contacts.</p>
+				<p class="mb-0">Vous vous êtes inscrit le {{  app.user.createdAt|date("D/M/Y à H:I:S") }}.</p>
+			</blockquote>	
+		{% else %}
+
+			<h1 class="text-secondary"><u><b>Identification</b></u></h1>
+
+			{% if error is defined and not error is null %}
+				<div class="alert alert-warning" role="alert">
+				  {{ error.messageKey|trans(error.messagedata, 'security', "Fr") }}
+				</div>
+			{% endif %}
+
+			<!-- Affichage message après inscription -->
+			{% if result is defined and not result is null %}
+				<div class ="row d-block d-md-none">
+					  <div class="alert {{ result.success ? 'alert-success' : 'alert-warning' }}" role="alert">result.message</div>
+				</div>
+			{% endif %}
+
+			<form action="{{ path('login') }}" method="post">
+				<div class="form-group">
+				    <label for="username">Email</label>
+				    	{% if last_Username is defined %}
+							<input type="email" value="{{ last_Username }}" class="form-control" id="username" aria-describedby="emailHelp" placeholder="Votre email" name="_username">
+				    	{% else %}
+			    			<input type="email" value="" class="form-control" id="username" aria-describedby="emailHelp" placeholder="Votre email" name="_username">
+						{% endif %}    
+				    <small id="emailHelp" class="form-text text-muted d-none d-md-block">Nous ne partagerons jamais votre e-mail avec quelqu'un d'autre.</small>
+				</div>
+				<div class="form-group">
+				    <label for="password">Mot de Passe</label>
+				    <input type="password" class="form-control" id="password" placeholder="Votre mot de passe" name="_password">
+				    <a href="{{ path('ForgotPassword') }}">Mot de passe oublié</a>
+				</div>
+				<div class="form-group form-check">
+				    <input type="checkbox" class="form-check-input" id="RememberMe">
+				    <label class="form-check-label" for="RememberMe">Se souvenir de moi</label>
+				</div>
+				<div class="text-right"><button type="submit" class="btn btn-secondary text-right">Se connecter</button></div>
+			</form>
+
+		{% endif %}
+   	</div>
+</div>
+{% endblock %}

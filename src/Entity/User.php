@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use EWZ\Bundle\RecaptchaBundle\Validator\Constraints as Recaptcha;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert ;
 
@@ -17,10 +16,6 @@ class User implements UserInterface
     const EMAIL_ADMIN = "boby15000@hotmail.com";
     Const PERIODE_KEY_PUBLIC = 7 ; // période en jour de la validité de la Clef publique.
 
-    /*
-     * @var UserPasswordEncoderInterface 
-     */
-    private $passwordEncoder;
 
 
     /* --- DECLARATION DES PROPRIETES --- */
@@ -33,6 +28,12 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @var string
+     * @ORM\Column(type="boolean")
+     */
+    private $Activer;
 
     /**
      * @var string
@@ -118,7 +119,18 @@ class User implements UserInterface
         return $this->id;
     }
     
-    
+    public function getActiver(): bool
+    {
+        return $this->Activer;
+    }
+
+    public function setActiver(bool $Activer): self
+    {
+        $this->Activer = $Activer;
+
+        return $this;
+    }
+
     public function getNom(): ?string
     {
         return $this->Nom;
@@ -168,7 +180,7 @@ class User implements UserInterface
 
     public function setPassword(string $password): self
     {
-        $this->password = $this->passwordEncoder->encodePassword($this,$password);
+        $this->password = $password;
 
         return $this;
     }
@@ -249,7 +261,7 @@ class User implements UserInterface
     public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->roles[] = 'ROLE_USER';
-        $this->passwordEncoder = $passwordEncoder;
+        $this->Activer = false;
         $this->createdAt = new \Datetime();
         $this->keyPrivate = \hash("sha256",\mt_rand(1, 200000));
     }
