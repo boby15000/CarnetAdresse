@@ -1,0 +1,44 @@
+
+
+{% block myForm %}
+{{ form_start(form) }}
+    <div class="form-row">
+    	<div class="form-group col-md-12">
+        	{{ form_widget(form.Professionel, {
+        		'label_attr': {'class': 'switch-custom'},
+        		'label' : 'Cette Adresse est professionelle.'}) }}
+        </div>
+        <div class="form-group col-md-6">
+        	{{ form_label(form.Nom) }}
+    		{{ form_widget(form.Nom, {
+        		'attr': {'class': 'form-control-lg'}}) }}
+        </div>
+    	<div class="form-group col-md-6">
+        	{{ form_label(form.Prenom) }}
+    		{{ form_widget(form.Prenom, {
+        		'attr': {'class': 'form-control-lg'}}) }}
+        </div>
+        <div class="form-group col-md-6">
+        	{{ form_label(form.Tel) }}
+    		{{ form_widget(form.Tel, {
+        		'attr': {'class': 'form-control-lg'}}) }}
+        </div>
+    	<div class="form-group col-md-6">
+        	{{ form_label(form.Email) }}
+    		{{ form_widget(form.Email, {
+        		'attr': {'class': 'form-control-lg'}}) }}
+        </div>
+        <div class="form-group col-md-12">
+        	{{ form_label(form.Adresse) }}
+    		{{ form_widget(form.Adresse, {
+        		'attr': {'class': 'form-control-lg'}}) }}
+        </div>
+        <div class="form-group col-md-12 text-right">
+        	{{ form_label(form.Envoyer) }}
+    		{{ form_widget(form.Envoyer, {
+        		'attr': {'class': 'form-control-lg btn btn-info'},
+                'label' : 'Sauvegarder'}) }}
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}

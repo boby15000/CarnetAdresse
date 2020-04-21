@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="{{ asset('css/base.css') }}" rel="stylesheet"/>
+        <title>{% block title %}Mon Carnet d'adresses{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body>
+    	<nav class="navbar navbar-expand-lg navbar-dark text-white bg-dark">
+		  <a class="navbar-brand" href="/">
+		  	<img src="{{ asset('images/logo.png') }}" width="30" height="30" class="d-inline-block align-top" alt="">Carnet d'Adresse</a>
+		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+		    <span class="navbar-toggler-icon"></span>
+		  </button>
+		  <div class="collapse navbar-collapse" id="navbarText">
+		    <ul class="navbar-nav mr-auto">
+          {# Affichage du menu lorsqu'on est authentifié #}
+          {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('Contact.Show') }}">Liste des contacts</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('Contact.Add') }}">Nouveau contact</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"></a>
+            </li>
+          {% endif %}
+
+		    </ul>
+        {# Affichage du menu lorsqu'on est authentifié #}
+		    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+			    <span class="navbar-text" >
+			      <a class="nav-link" href="{{ path('logout') }}">Se Déconnecter</a>
+			    </span>
+			{% else %}
+				<span class="navbar-text" >
+			      <a class="nav-link" href="{{ path('Inscription') }}">Inscription</a>
+			    </span>
+			{% endif %}
+
+		  </div>
+		</nav>
+		<div class="container-fluid">
+			{% block body %}{% endblock %}
+        </div>
+        {% block javascripts %}{% endblock %}
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    </body>
+</html>

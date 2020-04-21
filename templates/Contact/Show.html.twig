@@ -1,0 +1,84 @@
+
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+<div class ="row mt-4">
+  <h1 class="col-12 col-md-6 offset-md-5 text-secondary"><u><b>Liste des Contacts</b></u></h1>
+</div>
+
+<div class ="row mt-2">
+
+  {% if lesContacts|length > 0 %}
+
+  <!-- Menu Alphabet en responsive -->
+  <div class="col-12">
+    <nav>
+      <ul class="pagination justify-content-md-center table-responsive">
+        {% for letter in 'A'..'Z' %}
+
+          {% if  IndexLetter == letter %}
+            <li class="page-item active"><span class="page-link">{{ letter }}<span class="sr-only">(current)</span></a></li>
+          {% else %}
+            <li class="page-item"><a class="page-link" href="{{ path('Contact.Show', {letter: letter}) }}">{{ letter | upper }}</a></li>
+          {% endif %}
+
+        {% endfor %}
+      </ul>
+    </nav>
+  </div>
+
+  <!-- La Pagination -->
+  <div class="col-12 ">
+    {{ knp_pagination_render(lesContacts) }}
+  </div>
+</div>
+
+  {# Affichage du message de succès après une modification d'un contact dans la base de données. #}
+  {% if mailEnvoye %}
+    <div class="col-12 col-md-3 offset-md-4">
+      <div class="alert alert-success" role="alert">Votre demande est envoyé.</div>
+    </div>
+  {% endif %}
+
+  {# Affichage du message de succès après une modification d'un contact dans la base de données. #}
+  {% if modifSuccess %}
+    <div class="col-12 col-md-3 offset-md-4">
+      <div class="alert alert-success" role="alert">Votre contact est modifié.</div>
+    </div>
+  {% endif %}
+
+  {# Affichage du message de succès après une suppression d'un contact dans la base de données. #}
+  {% if DeleteSuccess %}
+    <div class="col-12 col-md-3 offset-md-4">
+      <div class="alert alert-success" role="alert">Votre contact est supprimé.</div>
+    </div>
+  {% endif %}
+
+  <!-- Les Contacts -->
+  {% for Contact in lesContacts %}
+    <div class ="row mb-2 mb-md-3">
+      <div class="col-12 col-md-4 offset-md-4 bg-dark text-light border rounded-top">
+        <b>{{ Contact.nom }} {{ Contact.prenom }}</b>
+        {# Lien de modification #}
+        <a href="{{ path('Contact.Edit', {id: Contact.id}) }}"><img src="{{ asset('images/pen.png') }}" width="30" height="30" class=" ml-4 d-inline-block align-middle" alt="Modifier"></a>
+       {# Lien de suppression #}
+        <a href="{{ path('Contact.Delete', {id: Contact.id}) }}"><img src="{{ asset('images/delete.png') }}" width="20" height="20" class="d-inline-block align-middle" alt="Modifier"></a>
+        <span class="d-none d-md-inline float-right">{{ Contact.tel }}</span>
+      </div>
+      <div class="col-12 col-md-4 offset-md-4 bg-light border">{{ Contact.adresse }}</div>
+      <div class="col-12 d-md-none bg-light border"><u><b>Tel : </b></u> {{ Contact.tel }}</div>
+      <div class="col-12 col-md-4 offset-md-4 bg-light border border rounded-bottom"><u><b>Email : </b></u>{{ Contact.email }}</div>
+    </div>
+  {% endfor %}
+
+{% else %}
+
+  <!-- Affichage lorsqu'ils n'y a pas d'enregistrement -->
+  <div class="col-12 col-md-4 offset-md-4"><b>Aucun contacts d'enregistrés.</b></div>
+
+{% endif %}
+
+
+{% endblock %}

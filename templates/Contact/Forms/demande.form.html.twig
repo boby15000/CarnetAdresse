@@ -1,0 +1,49 @@
+
+
+{% block myForm %}
+{{ form_start(form) }}
+    <div class="form-row mt-5">
+      <div class="form-group col-12">
+        {{ form_label(form.Destinataires) }}
+        {{ form_widget(form.Destinataires, {
+          'attr': {'class': 'form-control-lg'}}) }}
+        <small id="emailHelp" class="form-text text-muted d-none d-md-block">Séparez les adresses email par des points virgules.</small>
+      </div>
+      <div class="form-group col-12">
+        {{ form_label(form.message) }}
+        {{ form_widget(form.message, {
+          'attr': {'class': 'form-control-lg'}}) }}
+        <small id="emailHelp" class="form-text text-muted d-none d-md-block">Laissez le champ vide pour utiliser le message par défaut. <a href="#" data-toggle="modal" data-target="#messageModal"> Voir le message par défaut</a></small>
+      </div>
+      <div class="form-group col-md-12 text-right">
+        {{ form_label(form.Envoyer) }}
+        {{ form_widget(form.Envoyer, {
+          'attr': {'class': 'form-control-lg btn btn-info'},
+              'label' : 'Envoyer'}) }}
+      </div>
+    </div>
+
+   
+
+  <!-- Modal -->
+  <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"><b><u>Invitation de {{ app.user.prenom }} {{ app.user.nom }}</u></b></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {{ include('Contact/Messages/message.html.twig') }}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {{ form_end(form) }}
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+<div class ="row mt-4">
+	<div class="d-none d-md-block col-md-6 offset-md-1">
+		<blockquote class="blockquote">
+  			<span class="display-4"><u>Bienvenue sur Carnet D'adresse.</u></span>
+  				<p class="h3">Ce site permet à chacun de retrouver facilement ses contact.</p>
+  		</blockquote>
+
+  		<!-- Affichage message après inscription -->
+		{% if inscriptionSuccess is defined %}
+			<div class="alert alert-success" role="alert">Merci de vous êtes inscrit. vous pouvez désormais vous connecter.</div>
+		{% endif %}
+    </div>
+
+    <div class="col-12 col-sm-12 col-md-3" style="">
+    	{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+    		<blockquote class="blockquote">
+				<p class="mb-0">Vous êtes authentifié sous l'adresse mail : {{ app.user.email }}</p>
+				<p class="mb-0">Votre carnet contient {{ nbrContacts }} contacts.</p>
+				<p class="mb-0">Vous vous êtes inscrit le {{  app.user.createdAt|date("D/M/Y à H:I:S") }}.</p>
+			</blockquote>	
+		{% else %}
+			{{ include('authentification/Forms/identification.form.html.twig') }}
+		{% endif %}
+   	</div>
+</div>
+{% endblock %}
