@@ -135,7 +135,7 @@ class AuthentificationController extends AbstractController
      * @Route("/ForgotPassword", name="ForgotPassword")
      * @return Symfony\Component\HttpFoundation\Response;
      */
-    public function ForgotPassword(Request $request)
+    public function ForgotPassword(Request $request,  Authentification $authentification)
     {
         // On récupére le csrf.
         $csrf_token = $request->request->get('csrf_token');
@@ -143,34 +143,9 @@ class AuthentificationController extends AbstractController
         // Controle si le formulaire est émis.
         if ( $request->getMethod() === $request::METHOD_POST && $this->isCsrfTokenValid('ForgotPassword', $csrf_token) ) 
         {
-            // On récupére l'utilisateur via l'email.
-            $user = $this->GetDoctrine()->getRepository(User::class)->FindOneByMail($request->request->get('Email'));
-            
-            if ( $user === null )
-            { 
-                $this->result = array('success' => false, 'message' => "Cette addresse email est inconnu." ); 
-                return $this->render('authentification/forgotpassword.html.twig',['result' => $this->result]);
-            }
-
-            //Génére la clef public pour l'activiation du compte.
-            $key = $user->GenerateKeyPublic();
-            // Génére l'url
-            $urlPageActivation = $this->generateUrl('Activation', ['clefpublic' => $key], UrlGeneratorInterface::ABSOLUTE_URL);
-            // Envoye le mail pour l'activation.
-            $mailJet
-                ->addMessage( 
-                    (new Message)
-                        ->to($user->getEmail())
-                        ->subject('Invitation de ' . $user->getNomComplet())
-                        ->html($this->render('authentification/email/activation.message.html.twig', ['Url' => $urlPageActivation]))
-                );
-
-            // Controle que le mail est bien envoyé.   
-            if ( $mailJet->send() )
-            { $this->result = array('success' => true, 'message' => "Un mail vient de voir être envoyé." ); }
-            else
-            { $this->result = array('success' => false, 'message' => "Une erreur est survenu lors de la réinitialisation du mot de passe." ); }
-            
+            // Utilisation du service "Authentification" pour générer et envoyer l'email de changement de mot de passe.
+            $email = $request->request->get('Email');
+            $this->result = $authentification->EmailForgotPassword($email);  
 
         }
 
@@ -202,29 +177,20 @@ class AuthentificationController extends AbstractController
         // Controle si le formulaire est émis.
         if ( $request->getMethod() === $request::METHOD_POST && $this->isCsrfTokenValid('ChangePassword', $csrf_token) ) 
         {
-            // On récupére l'utilisateur via l'email.
-            $user = $this->GetDoctrine()->getRepository(User::class)->FindOneByMail($request->request->get('Email'));
-            
-            if ( $user === null )
-            { 
-                $this->result = array('success' => false, 'message' => "Cette addresse email est inconnu." ); 
-                return $this->render('authentification/forgotpassword.html.twig',['result' => $this->result]);
-            }
+            // Utilisation du service "Authentification" pour changer le mot de passe de l'utilisateur.
+            $credentials['password1'] = $request->request->get('password1');
+            $credentials['password2'] = $request->request->get('password2');
+            $credentials['clefpublic'] = $request->request->get('clefpublic');
+            $this->result = $authentification->ChangePassword($credentials);
 
-
-            // Encode le mot de passe
-            $user->setPassword($passwordEncoder->encodePassword($user, $user->getPassword() )); 
-            // Enregistre les modifications
-            $em = $this->GetDoctrine()->GetManager();
-            $em->persist($user);
-            $em->flush();
+            // Retourne la page login.
+            return $this->render('authentification/login.html.twig',['result' => $this->result]);
 
         }
 
 
-
         // Retourne la page ForgotPassword.
-        return $this->render('authentification/changepassword.html.twig',['result' => $this->result]);
+        return $this->render('authentification/changepassword.html.twig',['result' => $this->result, 'clefpublic' => $clefPublic]);
 
     }
 

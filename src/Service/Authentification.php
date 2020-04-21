@@ -3,10 +3,12 @@
 namespace App\Service;
 
 use App\Entity\Contact;
+use App\Entity\User;
 use App\Service\Email\MailJet;
 use App\Service\Email\Message;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Twig\Environment;
 
 
 /**
@@ -18,14 +20,16 @@ class Authentification
 	private $doctrine;
 	private $passwordEncoder;
 	private $mailjet;
+	private $twig;
 	
 
 
-	public function __construct(ManagerRegistry $doctrine, UserPasswordEncoderInterface $passwordEncoder, MailJet $mailjet)
+	public function __construct(ManagerRegistry $doctrine, UserPasswordEncoderInterface $passwordEncoder, MailJet $mailjet, Environment $twig)
 	{
 		$this->doctrine = $doctrine;
 		$this->passwordEncoder = $passwordEncoder;
 		$this->mailjet = $mailjet;
+		$this->twig = $twig;
 
 	}
 
@@ -47,13 +51,13 @@ class Authentification
                     (new Message)
                         ->to($user->getEmail())
                         ->subject('Invitation de ' . $user->getNomComplet())
-                        ->html($this->render('authentification/email/activation.message.html.twig', ['Url' => $urlPageActivation]))
+                        ->html($this->twig->render('authentification/email/activation.email.html.twig', ['Url' => $urlPageActivation]))
                 );
 		
 		// Controle que le mail est bien envoyé.   
         if ( $this->mailJet->send() )
         { 
-            // Enregistre les modification
+            // Enregistre les modifications uniquement si le mail est envoyé.
 			$this->SaveBDD($user);
             return array('success' => true, 'message' => "Votre inscription est enregistré. Merci de l'activer via le mail que vous avez reçu." );
             
@@ -76,7 +80,7 @@ class Authentification
 	{
 		// Récupérer l'utilisateur via la clef publique
 		$user = $this->doctrine->getRepository(User::class)->FindOneByClefPublic($clefPublic);
-		// Si non null, mettre à True la variable Activer
+		
 		if ( $user === null )
         { return array('success' => false, 'message' => "Une erreur est survenu lors de l'activation : impossible de définir l'utilisateur." ); }
 
@@ -91,7 +95,76 @@ class Authentification
 
 
 
+
+	/**
+	 * Envoie l'email pour réinitialiser le mot de passe de l'utilisateur.
+	 * 
+	 * @param string $clefPublic clef public de l'utilisateur.
+	 */
+	public function EmailForgotPassword(?string $email): array
+	{
+		// Récupérer l'utilisateur via la clef publique
+		$user = $this->doctrine->getRepository(User::class)->FindOneByMail($email);
+		
+		if ( $user === null )
+        { return array('success' => false, 'message' => "Une erreur est survenu : impossible de définir l'utilisateur." ); }
+
+    	//Génére la clef public pour l'activiation du compte.
+        $key = $user->GenerateKeyPublic();
+		// Generer l'url de la page d'activiation
+		$urlPageActivation = $this->generateUrl('ForgotPassword', ['clefPublic'=>$key], UrlGeneratorInterface::ABSOLUTE_URL);
+		// Envoyer le mail d'activation 
+		$this->mailjet->addMessage( 
+                    (new Message)
+                        ->to($user->getEmail())
+                        ->subject('Réinitialisation du mot de passe')
+                        ->html($this->twig->render('authentification/email/changepassword.email.html.twig', ['Url' => $urlPageActivation]))
+                );
+		
+		// Controle que le mail est bien envoyé.   
+        if ( $this->mailJet->send() )
+        { 
+            // Enregistre les modifications uniquement si le mail est envoyé.
+			$this->SaveBDD($user);
+            return array('success' => true, 'message' => "Un mail vient de vous être envoyé." );
+            
+        }
+        else
+        { return array('success' => false, 'message' => "Une erreur est survenu lors de la réinitialisation de votre mot de passe." ); }
+
+	}
 	
+
+
+
+	/**
+	 * Active le compte de l'utilisateur.
+	 * 
+	 * @param string $clefPublic clef public de l'utilisateur.
+	 */
+	public function ChangePassword(array $credentials): array
+	{
+		
+		// Controle la validité des mots de passes
+		if ( $credentials['password1'] !== $credentials['password2'] )
+		{ return array('success' => false, 'message' => "Les mots de passe sont différents." ); }
+
+		// Récupérer l'utilisateur via la clef publique
+		$user = $this->doctrine->getRepository(User::class)->FindOneByClefPublic($credentials['clefpublic']);
+		
+		if ( $user === null )
+        { return array('success' => false, 'message' => "Une erreur est survenu : impossible de définir l'utilisateur." ); }
+
+    	// Encode le mot de passe
+        $user->setPassword($this->EncodePassword($user, $credentials['password1'] )); 
+		// Enregistre les modification
+		$this->SaveBDD($user);
+
+		return array('success' => true, 'message' => "Votre mot de passe est enregistré. Vous pouvez vous connecter." );
+	}
+
+
+
 
 
 
