@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Service\Authentification;
 use App\Service\Email\MailJet;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -71,7 +72,7 @@ class AuthentificationController extends AbstractController
      * @Route("/Inscription", name="Inscription")
      * @return Symfony\Component\HttpFoundation\Response;
      */
-    public function Inscription(Request $request, UserPasswordEncoderInterface $passwordEncoder, MailJet $mailJet)
+    public function Inscription(Request $request, Authentification $authentification)
     {
         $user = new User(); // initiale un nouvel utilisateur 
         $form = $this->createForm(UserType::class, $user);
@@ -82,29 +83,10 @@ class AuthentificationController extends AbstractController
             $em = $this->GetDoctrine()->GetManager(); // Attribut un "ObjectManager".
             $em->persist($user);
             // Encode le mot de passe
-            $user->setPassword($passwordEncoder->encodePassword($user, $user->getPassword() )); 
-            //Génére la clef public pour l'activiation du compte.
-            $key = $user->GenerateKeyPublic();
-            // Génére l'url
-            $urlPageActivation = $this->generateUrl('Activation', [], UrlGeneratorInterface::ABSOLUTE_URL);
-            // Envoye le mail pour l'activation.
-            $mailJet
-                ->addMessage( 
-                    (new Message)
-                        ->to($user->getEmail())
-                        ->subject('Invitation de ' . $user->getNomComplet())
-                        ->html($this->render('authentification/email/activation.message.html.twig', ['Url' => $urlPageActivation]))
-                );
-
-            // Controle que le mail est bien envoyé.   
-            if ( $mailJet->send() )
-            { 
-                $this->result = array('success' => true, 'message' => "Votre inscription est enregistré. Merci de l'activer via le mail que vous avez reçu." );
-                $em->flush(); 
-            }
-            else
-            { $this->result = array('success' => false, 'message' => "Une erreur est survenu lors de l'inscription." ); }
-
+            $user->setPassword($authentification->EncodePassword($user, $user->getPassword() )); 
+            
+            // Utilisation du service "Authentification" pour envoyer le mail à l'utilisateur.
+            $this->result = $authentification->EmailActivate($clefPublic);
             
             return $this->render('authentification/login.html.twig', ['result' => $this->result]);
         }
@@ -129,25 +111,10 @@ class AuthentificationController extends AbstractController
      * @Route("/Activation/{clefPublic}", name="Activation")
      * @return Symfony\Component\HttpFoundation\Response;
      */
-    public function Activation($clefPublic)
+    public function Activation($clefPublic, Authentification $authentification)
     {
-
-        // On récupére l'utilisateur via la clef public.
-        $user = $this->GetDoctrine()->getRepository(User::class)->FindOneByClefPublic($clefPublic);
-
-        if ( $user === null )
-        {  $this->result = array('success' => false, 'message' => "Une erreur est survenu lors de l'activation." ); }
-        else
-        {
-        // On active l'utilisateur et on enregistre.
-        $user->setActiver = true;
-        $em = $this->GetDoctrine()->GetManager();
-        $em->persist($user);
-        $em->flush();
-
-        $this->result = array('success' => true, 'message' => "Votre compte est activé." );
-
-        }
+        // Utilisation du service "Authentification" pour activer le compte de l'utilisateur.
+        $this->result = $authentification->Activate($clefPublic);
 
         // Retourne la page login.
         return $this->render('authentification/login.html.twig',['result' => $this->result]);
@@ -221,7 +188,7 @@ class AuthentificationController extends AbstractController
 
 
     /**
-     * Inscription d'un nouvel utilisateur.
+     * Changement du mot de passe de l'utilisateur.
      * 
      * @Route("/ForgotPassword/{clefPublic}", name="ChangePassword")
      * @return Symfony\Component\HttpFoundation\Response;
@@ -229,9 +196,35 @@ class AuthentificationController extends AbstractController
     public function ChangePassword($clefPublic)
     {
 
+        // On récupére le csrf.
+        $csrf_token = $request->request->get('csrf_token');
+
+        // Controle si le formulaire est émis.
+        if ( $request->getMethod() === $request::METHOD_POST && $this->isCsrfTokenValid('ChangePassword', $csrf_token) ) 
+        {
+            // On récupére l'utilisateur via l'email.
+            $user = $this->GetDoctrine()->getRepository(User::class)->FindOneByMail($request->request->get('Email'));
+            
+            if ( $user === null )
+            { 
+                $this->result = array('success' => false, 'message' => "Cette addresse email est inconnu." ); 
+                return $this->render('authentification/forgotpassword.html.twig',['result' => $this->result]);
+            }
+
+
+            // Encode le mot de passe
+            $user->setPassword($passwordEncoder->encodePassword($user, $user->getPassword() )); 
+            // Enregistre les modifications
+            $em = $this->GetDoctrine()->GetManager();
+            $em->persist($user);
+            $em->flush();
+
+        }
+
+
 
         // Retourne la page ForgotPassword.
-        return $this->render('authentification/forgotpassword.html.twig',['result' => $this->result]);
+        return $this->render('authentification/changepassword.html.twig',['result' => $this->result]);
 
     }
 
