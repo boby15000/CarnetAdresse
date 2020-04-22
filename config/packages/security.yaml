@@ -22,10 +22,15 @@ security:
 
             form_login:
                 check_path: login
+                username_parameter: email
+                password_parameter: password
 
             logout:
                 path: /logout
                 target: /
+            guard:
+                authenticators:
+                    - App\Security\PersonaliseAuthenticator
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
 
