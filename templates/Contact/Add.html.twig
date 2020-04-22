@@ -12,13 +12,13 @@
 </div>
 
 {# Affichage du message de succès après un ajout dans la base de données. #}
-{% if result %}
-  <div class="alert alert-success" role="alert">Votre contact est enregistré.</div>
-{% endif %}
+{% for message in app.flashes('contact') %}
+    <div class="ol-12 col-4 offset-md-4 alert alert-success" role="alert"> {{ message }} </div>
+{% endfor %}
 
 {# Affichage du formulaire d'ajout #}
 <div class="col-12 col-sm-12 col-md-4 offset-md-4" style="">
-  {{ include('Contact/Forms/add.form.html.twig') }}
+  {{ include('contact/forms/add.form.html.twig') }}
 </div>
 
 {% endblock %}
