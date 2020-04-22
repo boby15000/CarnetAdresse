@@ -138,7 +138,7 @@ class User implements UserInterface
 
     public function setNom(string $Nom): self
     {
-        $this->Nom = $Nom;
+        $this->Nom = \ucwords($Nom);
 
         return $this;
     }
@@ -151,7 +151,7 @@ class User implements UserInterface
 
     public function setPrenom(string $Prenom): self
     {
-        $this->Prenom = $Prenom;
+        $this->Prenom = \ucwords($Prenom);
 
         return $this;
     }
@@ -258,7 +258,7 @@ class User implements UserInterface
 
     /* --- DELCARATION DES FONCTIONS --- */
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct()
     {
         $this->roles[] = 'ROLE_USER';
         $this->Activer = false;
