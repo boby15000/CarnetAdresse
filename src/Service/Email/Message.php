@@ -11,9 +11,19 @@ namespace App\Service\Email;
  */
 class Message 
 {
+	const EMAIL_FROM = 'boby15000@hotmail.com';
+	const EMAIL_NAME = 'Fourgheon Nicolas' ;
 
 	private $indiceTo = 0 ;
 	private $message;
+	
+
+	public function __construct()
+	{
+		$this->from( self::EMAIL_FROM,  self::EMAIL_NAME );
+	}
+
+	
 
 	public function getMessage(): array
 	{

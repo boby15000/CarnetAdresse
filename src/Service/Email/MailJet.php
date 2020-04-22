@@ -4,7 +4,7 @@ namespace App\Service\Email;
 
 use Mailjet\Client;
 use \Mailjet\Resources;
-use App\Service\Message;
+use App\Service\Email\Message;
 
 
 /**
@@ -51,7 +51,7 @@ class MailJet
 
 
 
-	public function send()
+	public function send(): bool
 	{
 		//dump($this->bodyMessage);
 		$response = $this->mj->post(Resources::$Email, ['body' => $this->bodyMessage]);
