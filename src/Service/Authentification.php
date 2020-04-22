@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Service\Email\MailJet;
 use App\Service\Email\Message;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Twig\Environment;
 
@@ -20,15 +21,17 @@ class Authentification
 	private $doctrine;
 	private $passwordEncoder;
 	private $mailjet;
+	private $router;
 	private $twig;
 	
 
 
-	public function __construct(ManagerRegistry $doctrine, UserPasswordEncoderInterface $passwordEncoder, MailJet $mailjet, Environment $twig)
+	public function __construct(ManagerRegistry $doctrine, UserPasswordEncoderInterface $passwordEncoder,UrlGeneratorInterface $router, MailJet $mailjet, Environment $twig)
 	{
 		$this->doctrine = $doctrine;
 		$this->passwordEncoder = $passwordEncoder;
 		$this->mailjet = $mailjet;
+		$this->router = $router;
 		$this->twig = $twig;
 
 	}
@@ -45,7 +48,7 @@ class Authentification
 		//Génére la clef public pour l'activiation du compte.
         $key = $user->GenerateKeyPublic();
 		// Generer l'url de la page d'activiation
-		$urlPageActivation = $this->generateUrl('Activation', ['clefPublic'=>$key], UrlGeneratorInterface::ABSOLUTE_URL);
+		$urlPageActivation = $this->router->generate('Activation', ['clefPublic'=>$key], UrlGeneratorInterface::ABSOLUTE_URL);
 		// Envoyer le mail d'activation 
 		$this->mailjet->addMessage( 
                     (new Message)
@@ -54,8 +57,10 @@ class Authentification
                         ->html($this->twig->render('authentification/email/activation.email.html.twig', ['Url' => $urlPageActivation]))
                 );
 		
+		dump($user);
+
 		// Controle que le mail est bien envoyé.   
-        if ( $this->mailJet->send() )
+        if ( $this->mailjet->send() )
         { 
             // Enregistre les modifications uniquement si le mail est envoyé.
 			$this->SaveBDD($user);
@@ -112,7 +117,7 @@ class Authentification
     	//Génére la clef public pour l'activiation du compte.
         $key = $user->GenerateKeyPublic();
 		// Generer l'url de la page d'activiation
-		$urlPageActivation = $this->generateUrl('ForgotPassword', ['clefPublic'=>$key], UrlGeneratorInterface::ABSOLUTE_URL);
+		$urlPageActivation = $this->router->generate('ForgotPassword', ['clefPublic'=>$key], UrlGeneratorInterface::ABSOLUTE_URL);
 		// Envoyer le mail d'activation 
 		$this->mailjet->addMessage( 
                     (new Message)
@@ -122,7 +127,7 @@ class Authentification
                 );
 		
 		// Controle que le mail est bien envoyé.   
-        if ( $this->mailJet->send() )
+        if ( $this->mailjet->send() )
         { 
             // Enregistre les modifications uniquement si le mail est envoyé.
 			$this->SaveBDD($user);

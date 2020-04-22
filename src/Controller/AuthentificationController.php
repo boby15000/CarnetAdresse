@@ -86,8 +86,8 @@ class AuthentificationController extends AbstractController
             $user->setPassword($authentification->EncodePassword($user, $user->getPassword() )); 
             
             // Utilisation du service "Authentification" pour envoyer le mail à l'utilisateur.
-            $this->result = $authentification->EmailActivate($clefPublic);
-            
+            $this->result = $authentification->EmailActivate($user);
+
             return $this->render('authentification/login.html.twig', ['result' => $this->result]);
         }
         
