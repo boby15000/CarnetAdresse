@@ -8,6 +8,8 @@
 /var/
 /vendor/
 /.phpintel/
+/.phpintel
+.phpintel
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
