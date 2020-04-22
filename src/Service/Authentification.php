@@ -91,6 +91,7 @@ class Authentification
 
     	// Active le compte
     	$user->setActiver(true);
+    	$user->ClearKeyPublic();
 		// Enregistre les modification
 		$this->SaveBDD($user);
 
@@ -161,7 +162,8 @@ class Authentification
         { return array('success' => false, 'message' => "Une erreur est survenu : impossible de définir l'utilisateur." ); }
 
     	// Encode le mot de passe
-        $user->setPassword($this->EncodePassword($user, $credentials['password1'] )); 
+        $user->setPassword($this->EncodePassword($user, $credentials['password1'] ));
+        $user->ClearKeyPublic();
 		// Enregistre les modification
 		$this->SaveBDD($user);
 
