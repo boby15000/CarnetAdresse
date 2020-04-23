@@ -9,6 +9,7 @@ use App\Form\InvitationType;
 use App\Repository\ContactRepository;
 use App\Service\Email\MailJet;
 use App\Service\Email\Message;
+use App\Service\InvitationServ;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -166,7 +167,7 @@ class ContactController extends AbstractController
      * @Route("/Contact/Invitation", name="Contact.Demande")
      * @return Symfony\Component\HttpFoundation\Response;
      */
-    public function InvitationDemande(Request $request)
+    public function InvitationDemande(Request $request, InvitationServ $invitationServ)
     {
        
         $messageEmail = $this->getUser()->getNomComplet() . " à besoin de vous pour remplir vos informations suivantes : Adresse postale, email, téléphone.";
@@ -182,12 +183,14 @@ class ContactController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->persist($invitation);
             
-            dump($invitation->getArrayDestinataires());
-            // Envoie le mail d'invitation
+            // Génére l'invitation.
+            $result = $invitationServ->getInvitation($invitation, $this->getUser());
             
-            //$em->flush();
+            if ( $result['success'] )
+            { $em->flush(); }
+          
             // Message flash de success.
-            $this->addFlash('contact','Votre invitation est envoyée.');
+            $this->addFlash('contact',$result['message']);
         }
 
         return $this->render('Contact/InvitationDemande.html.twig', ['form' => $form->createView(), 'message' => $messageEmail]);
@@ -202,10 +205,10 @@ class ContactController extends AbstractController
 
     /**
      * Demande d'adresse par mail.
-     * @Route("/Invitation-{key}", name="Contact.Invitation")
+     * @Route("/Invitation-{clefPublic}", name="Contact.Invitation")
      * @return Symfony\Component\HttpFoundation\Response;
      */
-    public function Invitation(Request $request, Invitation $invitation)
+    public function Invitation($clefPublic, Request $request)
     {
         return $this->render('Contact/Demande.html.twig',
             ['form' => $form->createView(), 'MessagePerso' => $MessagePerso]); 

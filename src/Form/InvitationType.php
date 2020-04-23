@@ -16,13 +16,15 @@ class InvitationType extends AbstractType
        
         $builder
             ->add('Destinataires', TextareaType::class, [
-                'attr' => [
-                    'placeholder' => "julien.durand@free.fr;maurice.jean@gmail.fr"
-                    ]
+                'attr' => 
+                    ['placeholder' => "julien.durand@free.fr;maurice.jean@gmail.fr"]
                 ])
             ->add('message', TextareaType::class, [
+                'attr' => 
+                    ['placeholder' => $options['messageEmail'] ],
                 'mapped' => false,
-                'data' => $options['messageEmail']
+                'required'   => false,
+                'empty_data' => $options['messageEmail']
                 ])
             ->add('Envoyer', SubmitType::class)
         ;
