@@ -53,7 +53,7 @@ class Authentification
 		$this->mailjet->addMessage( 
                     (new Message)
                         ->to($user->getEmail())
-                        ->subject('Invitation de ' . $user->getNomComplet())
+                        ->subject('Activation necessaire pour le compte de ' . $user->getNomComplet())
                         ->html($this->twig->render('authentification/email/activation.email.html.twig', ['Url' => $urlPageActivation]))
                 );
 
@@ -188,7 +188,7 @@ class Authentification
 	 * Enregistre les modifications dans la base de données.
 	 * @param User $user Un Utilisateur
 	 */
-	protected function SaveBDD(User $user):void
+	public function SaveBDD(User $user):void
 	{
 		$em = $this->doctrine->GetManager();
         $em->persist($user);

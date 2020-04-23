@@ -169,7 +169,6 @@ class ContactController extends AbstractController
      */
     public function InvitationDemande(Request $request, InvitationServ $invitationServ)
     {
-       
         $messageEmail = $this->getUser()->getNomComplet() . " à besoin de vous pour remplir vos informations suivantes : Adresse postale, email, téléphone.";
         $invitation = new Invitation(); // Génére une nouvelle invitation
         $form = $this->createForm(InvitationType::class, $invitation, ['messageEmail'=> $messageEmail]); // Défini un formulaire avec les données
@@ -177,18 +176,11 @@ class ContactController extends AbstractController
 
         // Controle si le formulaire est émis.
         if ($form->isSubmitted() && $form->isValid())
-        {
-        
-            // Enregistre l'invitation
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($invitation);
-            
+        {    
             // Génére l'invitation.
-            $result = $invitationServ->getInvitation($invitation, $this->getUser());
+            $message = ($request->request->get('message') === null) ? $messageEmail : $request->request->get('message');
+            $result = $invitationServ->getInvitation($invitation, $this->getUser(), $message );
             
-            if ( $result['success'] )
-            { $em->flush(); }
-          
             // Message flash de success.
             $this->addFlash('contact',$result['message']);
         }
@@ -208,11 +200,53 @@ class ContactController extends AbstractController
      * @Route("/Invitation-{clefPublic}", name="Contact.Invitation")
      * @return Symfony\Component\HttpFoundation\Response;
      */
-    public function Invitation($clefPublic, Request $request)
+    public function Invitation($clefPublic, Request $request, InvitationServ $invitationServ)
     {
-        return $this->render('Contact/Demande.html.twig',
-            ['form' => $form->createView(), 'MessagePerso' => $MessagePerso]); 
+        $contact = new contact(); // initiale un nouveau contact.
+        $form = $this->createForm(ContactType::class, $contact);
+        $form->handleRequest($request); // Enregistre le valeur de POST dans un objet contact.
+        // Controle si le formulaire est émis.
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            // Recuperation de la Clef privé.
+            $user = $invitationServ->getUserViaKeyPublic($clefPublic);
+            // Si User est null, indique une erreur à l'invité.
+
+            if ( !$user )
+            { 
+                $contact->setPrivateKey($user->getKeyPrivate());
+                // Enregistre le contact en base de données.
+                $em = $this->GetDoctrine()->GetManager(); 
+                $em->persist($contact);
+                $em->flush();
+               
+                $result = array('success' => true, 'message' => "Merci d'avoir enregistré vos informations pour le compte de " . $user->getNomComplet() );
+            }
+            else
+            {   $result = array('success' => false, 'message' => "Une erreur s'est produite : impossible de déterminé l'utilisateur qui vous a invité."); }         
+
+            return $this->render('Contact/invitation.add.html.twig', ['form' => $form->createView(), 'result' => $this->result]);
+        }
+
+        // Retourne la page d'ajout de contact. La variable "result" permet de définir si un contact vient d'être ajouté.
+        return $this->render('contact/invitation.add.html.twig', ['form' => $form->createView()]);
+
     }
 
+
+
+
+
+    /**
+     * Demande d'adresse par mail.
+     * @Route("/Invitation-stop", name="Contact.InvitationStop")
+     * @return Symfony\Component\HttpFoundation\Response;
+     */
+    public function InvitationStop($clefPublic, Request $request, InvitationServ $invitationServ)
+    {
+
+        // Retourne la page d'ajout de contact. La variable "result" permet de définir si un contact vient d'être ajouté.
+        return $this->render('contact/invitation.add.html.twig', ['result' => $this->result]);
+    }
 
 }

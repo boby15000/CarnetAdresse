@@ -11,6 +11,7 @@ namespace App\Service\Email;
  */
 class Message 
 {
+	const PATERN_EMAIL = "%^[^\W][a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\@[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\.[a-zA-Z]{2,4}$%";
 	const EMAIL_FROM = 'boby15000@hotmail.com';
 	const EMAIL_NAME = 'Fourgheon Nicolas' ;
 
@@ -69,7 +70,11 @@ class Message
 	public function toMulti(array $email): self
 	{
 		foreach ($email as $key => $value) {
-			$this->To($key, $value);
+			
+			if ( preg_match(self::PATERN_EMAIL, $key) )
+			{ $this->To($key, $value); }
+			else
+			{ $this->To($value, $key); }
 		}
 
 		return $this;

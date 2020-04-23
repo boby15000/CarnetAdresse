@@ -23,8 +23,7 @@ class InvitationType extends AbstractType
                 'attr' => 
                     ['placeholder' => $options['messageEmail'] ],
                 'mapped' => false,
-                'required'   => false,
-                'empty_data' => $options['messageEmail']
+                'required'   => false
                 ])
             ->add('Envoyer', SubmitType::class)
         ;

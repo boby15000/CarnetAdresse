@@ -36,7 +36,7 @@
 			<!-- Affichage message après inscription -->
 			{% if result is defined and not result is null %}
 				<div class ="row">
-					  <div class="col-12 col-sm-12 col-md-4 offset-md-4 alert {{ result.success ? 'alert-success' : 'alert-warning' }}" role="alert">{{ result.message }}</div>
+					  <div class="col-12 col-sm-12 col-md-6 offset-md-4 alert {{ result.success ? 'alert-success' : 'alert-warning' }}" role="alert">{{ result.message }}</div>
 				</div>
 			{% endif %}
 
