@@ -118,6 +118,7 @@ class InvitationServ
 		  		return null;
 		        break;
 		    case 1:
+		    	$invitation->setKeyPublic($clefPublic);
 		        $em->persist($invitation);
 		        break;
 		    default;
