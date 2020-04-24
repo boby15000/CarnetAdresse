@@ -47,14 +47,15 @@
 			{% block body %}{% endblock %}
         </div>
         {% block javascripts %}{% endblock %}
-        <script src = "// www.google.com/recaptcha/api.js?hl = {{app.request.locale}}"> 
+        <script src="//www.google.com/recaptcha/api.js?hl={{ app.request.locale }}"></script>
+        <script>
         fonction recaptchaCallback (jeton) {
-             var elem = document.querySelector (". g-recaptcha");
-             while ((elem = elem.parentElement)! == null) {
-             if (elem.nodeType === Node.ELEMENT_NODE && elem.tagName === 'FORM') {
-                 elem.submit ();
-                 Pause;
-             }
+         var elem = document.querySelector (".g-recaptcha");
+         while ((elem = elem.parentElement)! == null) {
+         if (elem.nodeType === Node.ELEMENT_NODE && elem.tagName === 'FORM') {
+             elem.submit ();
+             Pause;
+         }
         }      
         </script>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

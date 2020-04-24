@@ -21,13 +21,13 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nom', EmailType::class, [
+            ->add('nom', TextType::class, [
                 'attr' => [
-                        'placeholder' => "ex: Durand"]])
+                    'placeholder' => "ex: Durand"]])
             ->add('prenom', TextType::class, [
                 'label' => 'Prénom',
                 'attr' => [
-                        'placeholder' => "ex: Martin"]])
+                    'placeholder' => "ex: Martin"]])
             ->add('email', EmailType::class, [
                 'attr' => [
                         'placeholder' => "ex: martin.durand@gmail.fr"]])
@@ -38,8 +38,13 @@ class UserType extends AbstractType
                 'second_options' => ['label' => 'Confirmez votre mot de passe'],
             ])
             ->add('captcha', RecaptchaSubmitType::class, [
-                'label' => "S'inscrire"
+                'error_bubbling' => true,
+                'label' => 'Save'
+            ])
+            ->add('save', SubmitType::class, [
+                'label' => "S'incrire"
             ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver)
