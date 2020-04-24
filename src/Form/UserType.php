@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\User;
-use EWZ\Bundle\RecaptchaBundle\Form\Type\EWZRecaptchaType;
 use EWZ\Bundle\RecaptchaBundle\Validator\Constraints\IsTrue as RecaptchaTrue;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -35,11 +34,6 @@ class UserType extends AbstractType
                 'first_options'  => ['label' => 'Mot de passe'],
                 'second_options' => ['label' => 'Confirmez votre mot de passe'],
             ])
-            ->add('recaptcha', EWZRecaptchaType::class, 
-                array(
-                    'mapped'      => false,
-                    'constraints' => array(new RecaptchaTrue())
-                ))
             ->add('Envoyer', SubmitType::class);
     }
 
