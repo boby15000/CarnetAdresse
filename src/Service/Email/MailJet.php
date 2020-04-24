@@ -16,8 +16,8 @@ use App\Service\Email\Message;
 class MailJet 
 {
 
-	private const KEY_API ='e53d7c5ce90f1a3d04922f6356c1164b';
-	private const KEY_PRIVATE = 'd7ff7d022f91cf570172a329340800e9';
+	//private const KEY_API ='e53d7c5ce90f1a3d04922f6356c1164b';
+	//private const KEY_PRIVATE = 'd7ff7d022f91cf570172a329340800e9';
 
 	private $mj;
 	private $indiceMessage;
@@ -30,9 +30,9 @@ class MailJet
 	}
 
 
-	public function __construct()
+	public function __construct(string $keyAPI, string $keyPrivate)
 	{
-		$this->mj = new Client(self::KEY_API, self::KEY_PRIVATE,true,['version' => 'v3.1']);
+		$this->mj = new Client($keyAPI, $keyPrivate,true,['version' => 'v3.1']);
 	}
 
 
