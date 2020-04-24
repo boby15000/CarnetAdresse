@@ -3,6 +3,9 @@
 namespace App\Form;
 
 use App\Entity\User;
+use Beelab\Recaptcha2Bundle\Form\Type\RecaptchaType;
+use Beelab\Recaptcha2Bundle\Validator\Constraints\Recaptcha2;
+use Beelab\Recaptcha2Bundle\Form\Type\RecaptchaSubmitType;
 use EWZ\Bundle\RecaptchaBundle\Validator\Constraints\IsTrue as RecaptchaTrue;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -34,7 +37,9 @@ class UserType extends AbstractType
                 'first_options'  => ['label' => 'Mot de passe'],
                 'second_options' => ['label' => 'Confirmez votre mot de passe'],
             ])
-            ->add('Envoyer', SubmitType::class);
+            ->add('captcha', RecaptchaSubmitType::class, [
+                'label' => "S'inscrire"
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
