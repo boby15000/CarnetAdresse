@@ -3,7 +3,9 @@
 namespace App\Form;
 
 use App\Entity\User;
-use EWZ\Bundle\RecaptchaBundle\Form\Type\EWZRecaptchaType;
+use Beelab\Recaptcha2Bundle\Form\Type\RecaptchaType;
+use Beelab\Recaptcha2Bundle\Validator\Constraints\Recaptcha2;
+use Beelab\Recaptcha2Bundle\Form\Type\RecaptchaSubmitType;
 use EWZ\Bundle\RecaptchaBundle\Validator\Constraints\IsTrue as RecaptchaTrue;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -19,13 +21,13 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nom', EmailType::class, [
+            ->add('nom', TextType::class, [
                 'attr' => [
-                        'placeholder' => "ex: Durand"]])
+                    'placeholder' => "ex: Durand"]])
             ->add('prenom', TextType::class, [
                 'label' => 'Prénom',
                 'attr' => [
-                        'placeholder' => "ex: Martin"]])
+                    'placeholder' => "ex: Martin"]])
             ->add('email', EmailType::class, [
                 'attr' => [
                         'placeholder' => "ex: martin.durand@gmail.fr"]])
@@ -35,12 +37,14 @@ class UserType extends AbstractType
                 'first_options'  => ['label' => 'Mot de passe'],
                 'second_options' => ['label' => 'Confirmez votre mot de passe'],
             ])
-            ->add('recaptcha', EWZRecaptchaType::class, 
-                array(
-                    'mapped'      => false,
-                    'constraints' => array(new RecaptchaTrue())
-                ))
-            ->add('Envoyer', SubmitType::class);
+            ->add('captcha', RecaptchaSubmitType::class, [
+                'error_bubbling' => true,
+                'label' => 'Save'
+            ])
+            ->add('save', SubmitType::class, [
+                'label' => "S'incrire"
+            ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver)
