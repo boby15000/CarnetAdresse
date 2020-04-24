@@ -225,7 +225,7 @@ class ContactController extends AbstractController
             else
             {   $result = array('success' => false, 'message' => "Une erreur s'est produite : impossible de déterminé l'utilisateur qui vous a invité."); }         
 
-            return $this->render('Contact/invitation.add.html.twig', ['form' => $form->createView(), 'result' => $this->result]);
+            return $this->render('authentification/login.html.twig', ['result' => $result]);
         }
 
         // Retourne la page d'ajout de contact. La variable "result" permet de définir si un contact vient d'être ajouté.
@@ -244,6 +244,11 @@ class ContactController extends AbstractController
      */
     public function InvitationStop($clefPublic, Request $request, InvitationServ $invitationServ)
     {
+        // Récupérer l'invitation
+        // Définir l'attribut "Bloquer" à true
+        // Enregistrer le modification
+        // Affichez un message à l'inviter indiquant qu'il ne recevra plus de message depuis Carnet-adresse.fr
+        
 
         // Retourne la page d'ajout de contact. La variable "result" permet de définir si un contact vient d'être ajouté.
         return $this->render('contact/invitation.add.html.twig', ['result' => $this->result]);
