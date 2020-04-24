@@ -16,9 +16,6 @@ use App\Service\Email\Message;
 class MailJet 
 {
 
-	//private const KEY_API ='e53d7c5ce90f1a3d04922f6356c1164b';
-	//private const KEY_PRIVATE = 'd7ff7d022f91cf570172a329340800e9';
-
 	private $mj;
 	private $indiceMessage;
 	private $bodyMessage;
