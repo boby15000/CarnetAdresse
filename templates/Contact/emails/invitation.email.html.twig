@@ -1,0 +1,19 @@
+<html>
+<body>
+	<h4>Bonjour,</h4>
+
+		<blockquote class="ml-4 mt-3">
+		
+			<p>{{ message }}</p>
+
+			<p><i>Cette invitation n'est pas automatique. Elle est émise manuellement par {{ app.user.prenom }} {{ app.user.nom }} depuis le site www.carnet-adresse.fr. Si vous souhaitez ne plus recevoir d'invitation depuis ce site, merci de <a href="{{ urlstop is defined ? urlstop : '#' }}">cliquer ici</a>.</i></p>
+
+			{# lien url pour accéder au formulaire d'ajout de contact. #}
+			<p><a href="{{ urlremplir is defined ? urlremplir : '#' }}">Je souhaite remplir mes informations.</a></p>
+			
+		</blockquote>
+
+	<p>En vous remerciant<br>
+	Le Site Carnet-Adresse.fr</p>
+</body>
+</html>

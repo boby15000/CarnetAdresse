@@ -183,4 +183,11 @@ class Contact
 
         return $this;
     }
+
+
+    public function getNomComplet(): string
+    {
+        return $this->Nom . ' ' . $this->Prenom ;
+    }
+
 }

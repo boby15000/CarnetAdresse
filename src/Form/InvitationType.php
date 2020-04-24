@@ -2,24 +2,28 @@
 
 namespace App\Form;
 
-use App\Entity\DemandeByMail;
+use App\Entity\Invitation;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-class DemandeByMailType extends AbstractType
+class InvitationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $message = $options['nomComplet'] ." à besoin de vous pour remplir vos informations suivantes : Adresse postale, email, téléphone.";
-
+       
         $builder
-            ->add('Destinataires', TextareaType::class)
+            ->add('Destinataires', TextareaType::class, [
+                'attr' => 
+                    ['placeholder' => "julien.durand@free.fr;maurice.jean@gmail.fr"]
+                ])
             ->add('message', TextareaType::class, [
+                'attr' => 
+                    ['placeholder' => $options['messageEmail'] ],
                 'mapped' => false,
-                'data' => $message
+                'required'   => false
                 ])
             ->add('Envoyer', SubmitType::class)
         ;
@@ -28,10 +32,10 @@ class DemandeByMailType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => DemandeByMail::class,
-            'nomComplet' => '',
+            'data_class' => Invitation::class,
+            'messageEmail' => '',
         ]);
 
-        $resolver->setAllowedTypes('nomComplet', 'string');
+        $resolver->setAllowedTypes('messageEmail', 'string');
     }
 }

@@ -10,8 +10,6 @@
 
 <div class ="row mt-2">
 
-  {% if lesContacts|length > 0 %}
-
   <!-- Menu Alphabet en responsive -->
   <div class="col-12">
     <nav>
@@ -29,32 +27,18 @@
     </nav>
   </div>
 
+   {% if lesContacts|length > 0 %}
+
   <!-- La Pagination -->
   <div class="col-12 ">
     {{ knp_pagination_render(lesContacts) }}
   </div>
 </div>
 
-  {# Affichage du message de succès après une modification d'un contact dans la base de données. #}
-  {% if mailEnvoye %}
-    <div class="col-12 col-md-3 offset-md-4">
-      <div class="alert alert-success" role="alert">Votre demande est envoyé.</div>
-    </div>
-  {% endif %}
-
-  {# Affichage du message de succès après une modification d'un contact dans la base de données. #}
-  {% if modifSuccess %}
-    <div class="col-12 col-md-3 offset-md-4">
-      <div class="alert alert-success" role="alert">Votre contact est modifié.</div>
-    </div>
-  {% endif %}
-
-  {# Affichage du message de succès après une suppression d'un contact dans la base de données. #}
-  {% if DeleteSuccess %}
-    <div class="col-12 col-md-3 offset-md-4">
-      <div class="alert alert-success" role="alert">Votre contact est supprimé.</div>
-    </div>
-  {% endif %}
+  {# Affichage du message de succès une modification ou suppression depuis la base de données. #}
+  {% for message in app.flashes('contact') %}
+    <div class="ol-12 col-4 offset-md-4 alert alert-success" role="alert"> {{ message }} </div>
+  {% endfor %}
 
   <!-- Les Contacts -->
   {% for Contact in lesContacts %}
