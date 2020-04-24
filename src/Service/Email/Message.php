@@ -12,7 +12,7 @@ namespace App\Service\Email;
 class Message 
 {
 	const PATERN_EMAIL = "%^[^\W][a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\@[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\.[a-zA-Z]{2,4}$%";
-	const EMAIL_FROM = 'boby15000@hotmail.com';
+	const EMAIL_FROM = 'no-reply@carnet-adresse.fr';
 	const EMAIL_NAME = 'Fourgheon Nicolas' ;
 
 	private $indiceTo = 0 ;
