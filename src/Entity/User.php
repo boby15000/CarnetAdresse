@@ -2,13 +2,16 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use EWZ\Bundle\RecaptchaBundle\Validator\Constraints as Recaptcha;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert ;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class User implements UserInterface
 {
@@ -22,18 +25,12 @@ class User implements UserInterface
 
 
     /**
-     * @var string
+     * @var int
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
     private $id;
-
-    /**
-     * @var string
-     * @ORM\Column(type="boolean")
-     */
-    private $Activer;
 
     /**
      * @var string
@@ -44,7 +41,7 @@ class User implements UserInterface
      *      minMessage = "Le Nom doit contenir {{ limit }} caractères minimum",
      *      allowEmptyString = false)
      */
-    private $Nom;
+    private $nom;
 
     /**
      * @var string
@@ -55,7 +52,7 @@ class User implements UserInterface
      *      minMessage = "Le Prénom doit contenir {{ limit }} caractères minimum",
      *      allowEmptyString = false)
      */
-    private $Prenom;
+    private $prenom;
 
     /**
      * @var string
@@ -64,7 +61,6 @@ class User implements UserInterface
      * @Assert\Email(message="L'email '{{ value }}' n'est pas valide.")
      */
     private $email;
-
 
     /**
      * @var string
@@ -76,7 +72,7 @@ class User implements UserInterface
      *      allowEmptyString = false)
      * @Assert\NotCompromisedPassword(message="Ce mot de passe a été divulgué lors d'une violation de données, il ne doit pas être utilisé. Veuillez utiliser un autre mot de passe")
      */
-    private $password;
+    private $motdepasse;
 
     /**
      * @var array
@@ -85,105 +81,197 @@ class User implements UserInterface
     private $roles = [];
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Fiche", mappedBy="fiches")
+     */
+    private $fiches; 
+
+    /**
+     * @var bool
+     * @ORM\Column(type="boolean")
+     */
+    private $compteactif;   
+
+    /**
      * @var datetime
      * @ORM\Column(type="datetime")
      */
-    private $createdAt;
+    private $creerle;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=100,)
+     * @ORM\Column(type="string", length=255,)
      */
-    private $keyPrivate;   
+    private $clefpublic;
+
+  
 
 
-    /**
-     * @var string
-     * @ORM\Column(type="string", length=100, nullable=true)
-     */
-    private $keyPublic;
 
-    /**
-     * @var datetime
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $keyPublicCreatedAt;
+
 
 
 
 /* --- DELCARATION DES SETTERS ET GETTES DES PROPRIETES --- */
 
-    
-    public function getId(): ?int
+
+
+     /**
+     * @return int
+     */
+    public function getId()
     {
         return $this->id;
     }
-    
-    public function getActiver(): bool
-    {
-        return $this->Activer;
-    }
-
-    public function setActiver(bool $Activer): self
-    {
-        $this->Activer = $Activer;
-
-        return $this;
-    }
-
-    public function getNom(): ?string
-    {
-        return $this->Nom;
-    }
-
-    public function setNom(string $Nom): self
-    {
-        $this->Nom = \ucwords($Nom);
-
-        return $this;
-    }
-
-
-    public function getPrenom(): ?string
-    {
-        return $this->Prenom;
-    }
-
-    public function setPrenom(string $Prenom): self
-    {
-        $this->Prenom = \ucwords($Prenom);
-
-        return $this;
-    }
-
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
 
     /**
-     * @see UserInterface
+     * @param int $id
+     *
+     * @return self
      */
-    public function getPassword(): ?string
+    public function setId($id)
     {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
+        $this->id = $id;
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getNom()
+    {
+        return $this->nom;
+    }
+
+    /**
+     * @param string $nom
+     *
+     * @return self
+     */
+    public function setNom($nom)
+    {
+        $this->nom = \ucwords($nom);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrenom()
+    {
+        return $this->prenom;
+    }
+
+    /**
+     * @param string $prenom
+     *
+     * @return self
+     */
+    public function setPrenom($prenom)
+    {
+        $this->prenom = \ucwords($prenom);
+
+        return $this;
+    }
+
+    /**
+     * @param string $email
+     *
+     * @return self
+     */
+    public function setEmail($email)
+    {
+        $this->email = \strtolower($email);
+
+        return $this;
+    }
+
+    /**
+     * @param string $motdepasse
+     *
+     * @return self
+     */
+    public function setMotdepasse($motdepasse)
+    {
+        $this->motdepasse = $motdepasse;
+
+        return $this;
+    }
+
+    /**
+     * @param array $roles
+     *
+     * @return self
+     */
+    public function setRoles(array $roles)
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @param mixed $fiches
+     *
+     * @return self
+     */
+    public function setFiches($fiches)
+    {
+        $this->fiches = $fiches;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCompteactif()
+    {
+        return $this->compteactif;
+    }
+
+    /**
+     * @param bool $compteactif
+     *
+     * @return self
+     */
+    public function setCompteactif($compteactif)
+    {
+        $this->compteactif = $compteactif;
+
+        return $this;
+    }
+
+    /**
+     * @param datetime $creerle
+     *
+     * @return self
+     */
+    public function setCreerle(datetime $creerle)
+    {
+        $this->creerle = $creerle;
+
+        return $this;
+    }
+
+    /**
+     * @param string $clefpublic
+     *
+     * @return self
+     */
+    public function setClefpublic($clefpublic)
+    {
+        $this->clefpublic = $clefpublic;
+
+        return $this;
+    }
+    
+
+
+
+
+/* --- DECLARATION DES FONCTIONS USER INTERFACE--- */
 
 
     /**
@@ -191,105 +279,10 @@ class User implements UserInterface
      */
     public function getRoles(): array
     {
-        return array_unique($this->roles);
-    }
-
-    public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
-       
-        return $this;
-    }
-
-
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-
-    public function getKeyPrivate(): ?string
-    {
-        return $this->keyPrivate;
-    }
-
-    public function setKeyPrivate(string $keyPrivate): self
-    {
-        $this->keyPrivate = $keyPrivate;
-
-        return $this;
-    }
-
-
-    public function getKeyPublic(): ?string
-    {
-        return $this->keyPublic;
-    }
-
-    public function setkeyPublic(string $keyPublic): self
-    {
-        $this->keyPublic = $keyPublic;
-
-        return $this;
-    }
-
-   
-    public function getKeyPublicCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->keyPublicCreatedAt;
-    }
-
-    public function setKeyPublicCreatedAt(?\DateTimeInterface $keyPublicCreatedAt): self
-    {
-        $this->keyPublicCreatedAt = $keyPublicCreatedAt;
-
-        return $this;
-    }
-
-
-    
-
-    /* --- DELCARATION DES FONCTIONS --- */
-
-    public function __construct()
-    {
-        $this->roles[] = 'ROLE_USER';
-        $this->Activer = false;
-        $this->createdAt = new \Datetime();
-        $this->keyPrivate = \hash("sha256",\mt_rand(1, 200000));
-    }
-
-
-    public function GenerateKeyPublic(): ?string
-    {
-        $this->keyPublic = \hash("sha256",\mt_rand(1, 200000));
-        $this->keyPublicCreatedAt = new \Datetime();
-        return $this->keyPublic;
-    }
-
-    public function ClearKeyPublic()
-    {
-        $this->keyPublic = null ;
-        $this->keyPublicCreatedAt = null ;
-       
-    }
-
-
-    public function getNomComplet()
-    {
-        return $this->Prenom . ' ' . $this->Nom;
+        return (array) $this->roles;
     }
 
     /**
-     * A visual identifier that represents this user.
-     *
      * @see UserInterface
      */
     public function getUsername(): string
@@ -297,7 +290,14 @@ class User implements UserInterface
         return (string) $this->email;
     }
 
-
+    /**
+     * @see UserInterface
+     */
+    public function getPassword(): string
+    {
+        return (string) $this->motdepasse;
+    }
+    
     /**
      * @see UserInterface
      */
@@ -313,6 +313,81 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
-    }  
+    }
+
+
+
+
+    
+
+/* --- DECLARATION DES FONCTIONS --- */
+
+
+
+
+    public function __construct()
+    {
+        $this->roles[] = 'ROLE_USER';
+        $this->compteactif = false;
+        $this->creerle = new \Datetime();
+        $this->fiches = new ArrayCollection();
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function GenerateKeyPublic(): ?string
+    {
+        $this->clefpublic = \hash("sha256",$this->email);
+        return $this->clefpublic ;
+    }
+
+
+    public function ClearKeyPublic()
+    {
+        $this->clefpublic = null ;       
+    }
+
+
+    public function getNomComplet()
+    {
+        return $this->Prenom . ' ' . $this->Nom;
+    }
+
+    /**
+     * @return Collection|Fiche[]
+     */
+    public function getFiches(): Collection
+    {
+        return $this->fiches;
+    }
+
+    public function addFiche(Fiche $fiche): self
+    {
+        if (!$this->fiches->contains($fiche)) {
+            $this->fiches[] = $fiche;
+            $fich->setFiches($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFiche(Fiche $fiche): self
+    {
+        if ($this->fiches->contains($fiche)) {
+            $this->fiches->removeElement($fiche);
+            // set the owning side to null (unless already changed)
+            if ($fich->getFiches() === $this) {
+                $fich->setFiches(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+
+   
+
 
 }
