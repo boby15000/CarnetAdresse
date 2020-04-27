@@ -6,12 +6,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\HasLifecycleCallbacks()
+ * @UniqueEntity("email")
  */
 class User implements UserInterface
 {
@@ -81,9 +83,9 @@ class User implements UserInterface
     private $roles = [];
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Fiche", mappedBy="fiches")
+     * @ORM\OneToMany(targetEntity="App\Entity\fiche", mappedBy="user", orphanRemoval=true)
      */
-    private $fiches; 
+    private $fiches;
 
     /**
      * @var bool
@@ -99,9 +101,11 @@ class User implements UserInterface
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255,)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $clefpublic;
+
+
 
   
 
@@ -114,8 +118,7 @@ class User implements UserInterface
 /* --- DELCARATION DES SETTERS ET GETTES DES PROPRIETES --- */
 
 
-
-     /**
+ /**
      * @return int
      */
     public function getId()
@@ -150,7 +153,7 @@ class User implements UserInterface
      */
     public function setNom($nom)
     {
-        $this->nom = \ucwords($nom);
+        $this->nom = $nom;
 
         return $this;
     }
@@ -170,9 +173,17 @@ class User implements UserInterface
      */
     public function setPrenom($prenom)
     {
-        $this->prenom = \ucwords($prenom);
+        $this->prenom = $prenom;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
     }
 
     /**
@@ -182,9 +193,17 @@ class User implements UserInterface
      */
     public function setEmail($email)
     {
-        $this->email = \strtolower($email);
+        $this->email = $email;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMotdepasse()
+    {
+        return $this->motdepasse;
     }
 
     /**
@@ -211,17 +230,6 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @param mixed $fiches
-     *
-     * @return self
-     */
-    public function setFiches($fiches)
-    {
-        $this->fiches = $fiches;
-
-        return $this;
-    }
 
     /**
      * @return bool
@@ -244,15 +252,31 @@ class User implements UserInterface
     }
 
     /**
+     * @return datetime
+     */
+    public function getCreerle()
+    {
+        return $this->creerle;
+    }
+
+    /**
      * @param datetime $creerle
      *
      * @return self
      */
-    public function setCreerle(datetime $creerle)
+    public function setCreerle(\datetime $creerle)
     {
         $this->creerle = $creerle;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClefpublic()
+    {
+        return $this->clefpublic;
     }
 
     /**
@@ -351,43 +375,41 @@ class User implements UserInterface
 
     public function getNomComplet()
     {
-        return $this->Prenom . ' ' . $this->Nom;
+        return $this->prenom . ' ' . $this->nom;
     }
 
     /**
-     * @return Collection|Fiche[]
+     * @return Collection|fiche[]
      */
     public function getFiches(): Collection
     {
         return $this->fiches;
     }
 
-    public function addFiche(Fiche $fiche): self
+    public function addFich(fiche $fich): self
     {
-        if (!$this->fiches->contains($fiche)) {
-            $this->fiches[] = $fiche;
-            $fich->setFiches($this);
+        if (!$this->fiches->contains($fich)) {
+            $this->fiches[] = $fich;
+            $fich->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeFiche(Fiche $fiche): self
+    public function removeFich(fiche $fich): self
     {
-        if ($this->fiches->contains($fiche)) {
-            $this->fiches->removeElement($fiche);
+        if ($this->fiches->contains($fich)) {
+            $this->fiches->removeElement($fich);
             // set the owning side to null (unless already changed)
-            if ($fich->getFiches() === $this) {
-                $fich->setFiches(null);
+            if ($fich->getUser() === $this) {
+                $fich->setUser(null);
             }
         }
 
         return $this;
     }
 
-
+    
 
    
-
-
 }

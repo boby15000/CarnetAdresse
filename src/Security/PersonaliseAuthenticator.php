@@ -80,7 +80,7 @@ class PersonaliseAuthenticator extends AbstractFormLoginAuthenticator implements
     public function checkCredentials($credentials, UserInterface $user)
     {
         
-        if (!$user->getActiver()) 
+        if (!$user->isCompteactif()) 
         { throw new CustomUserMessageAuthenticationException("Ce compte n'est pas activé."); }
 
         return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);

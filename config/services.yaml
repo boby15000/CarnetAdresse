@@ -26,9 +26,30 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-     # explicitly configure the service
-    App\Service\Email\MailJet:
+    # explicitly configure the service
+    App\Service\Email\Mailjet:
         arguments:
             $keyAPI: '%env(KEY_API)%'
             $keyPrivate: '%env(KEY_PRIVATE)%'
+            $emailFrom: '%env(EMAIL_FROM)%'
+            $emailName: '%env(EMAIL_NAME)%'
         autowire: true
+
+    App\Events\UserActivationNotifier:
+        arguments:
+            $request_stack: '@request_stack'
+        tags:
+            - 
+                name: 'doctrine.orm.entity_listener'
+                event: 'postPersist'
+                entity: 'App\Entity\User'
+                lazy: true
+                method: 'SendMailActivation'
+            - 
+                name: 'doctrine.orm.entity_listener'
+                event: 'postUpdate'
+                entity: 'App\Entity\User'
+                lazy: true
+                method: 'SendMailMotDePasseOublie'
+        
+            

@@ -2,8 +2,9 @@
 
 namespace App\Service\Email;
 
-use Mailjet\Client;
+use \Mailjet\Client;
 use \Mailjet\Resources;
+use \Mailjet\Response;
 use App\Service\Email\Message;
 
 
@@ -13,27 +14,38 @@ use App\Service\Email\Message;
  * @license  MIT https://opensource.org/licenses/MIT
  * @date 13/04/2020
  */
-class MailJet 
+class Mailjet 
 {
 
 	private $mj;
 	private $indiceMessage;
 	private $bodyMessage;
 	private $status;
+	private $emailFrom;
+	private $emailName;
 
-	public function getStatus(): ?array
+	public function GetStatus(): ?array
 	{
 		return $this->status;
 	}
 
 
-	public function __construct(string $keyAPI, string $keyPrivate)
+	public function __construct(string $keyAPI, string $keyPrivate, string $emailFrom, ?string $emailName)
 	{
 		$this->mj = new Client($keyAPI, $keyPrivate,true,['version' => 'v3.1']);
+		$this->emailFrom = $emailFrom;
+		$this->emailName = $emailName;
 	}
 
 
-	public function addMessage(Message $message): self
+	public function NewMessage(): Message
+	{
+		return new Message($this->emailFrom, $this->emailName);
+	}
+
+
+
+	public function AddMessage(Message $message): self
 	{
 		if ( $this->bodyMessage == null )
 		{ $this->indiceMessage = 0; }
@@ -48,7 +60,7 @@ class MailJet
 
 
 
-	public function send(): bool
+	public function Send(): bool
 	{
 		//dump($this->bodyMessage);
 		$response = $this->mj->post(Resources::$Email, ['body' => $this->bodyMessage]);

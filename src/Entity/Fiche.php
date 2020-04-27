@@ -7,6 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\FicheRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Fiche
 {
@@ -74,9 +75,10 @@ class Fiche
     private $modifierle;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="user")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="fiches")
      */
     private $user;
+
 
 
 
@@ -303,6 +305,16 @@ class Fiche
         return $this->Nom . ' ' . $this->Prenom ;
     }
 
+    /**
+     * Défini la Date à chaque modification de la fiche.
+     * 
+     * @ORM\PreUpdate
+     */
+    public function UpdateModifierle()
+    {
+        $this->modifierle = new \DateTime();
+    }
+
     public function getUser(): ?User
     {
         return $this->user;
@@ -314,6 +326,8 @@ class Fiche
 
         return $this;
     }
+
+
 
 
 }

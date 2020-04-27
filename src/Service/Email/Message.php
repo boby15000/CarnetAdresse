@@ -12,16 +12,14 @@ namespace App\Service\Email;
 class Message 
 {
 	const PATERN_EMAIL = "%^[^\W][a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\@[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\.[a-zA-Z]{2,4}$%";
-	const EMAIL_FROM = 'no-reply@carnet-adresse.fr';
-	const EMAIL_NAME = 'Fourgheon Nicolas' ;
-
+	
 	private $indiceTo = 0 ;
 	private $message;
 	
 
-	public function __construct()
+	public function __construct($emailFrom, $emailName)
 	{
-		$this->from( self::EMAIL_FROM,  self::EMAIL_NAME );
+		$this->from( $emailFrom,  $emailName );
 	}
 
 	

@@ -1,0 +1,34 @@
+
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+	<div class ="row mt-4">
+		<div class="col-12 col-sm-12 col-md-4 offset-md-4">
+			<h1 class="text-secondary"><u><b>Votre nouveau mot de passe</b></u></h1>
+		</div>
+	</div>
+
+	<!-- Affichage message après inscription -->
+	{% if result is defined and not result is null %}
+		<div class ="row">
+			  <div class=" col-12 col-sm-12 col-md-4 offset-md-4 alert {{ result.success ? 'alert-success' : 'alert-warning' }}" role="alert">{{ result.message }} </div>
+		</div>
+	{% endif %}
+
+	<div class="col-12 col-sm-12 col-md-4 offset-md-4" style="">
+		<form action="{{ path('changerlemotDepasse', {'clefPublic': clefpublic}) }}" method="post">
+			<div class="form-group">
+			    <label for="MotDePasse1">Votre nouveau mot de passe</label>
+			    <input type="MotDePasse1" name"MotDePasse1" class="form-control" id="MotDePasse1" >
+			    <label for="MotDePasse2">Confirmez votre nouveau mot de passe</label>
+			    <input type="MotDePasse2" name"MotDePasse2" class="form-control" id="MotDePasse2" >
+			</div>
+  			<div class="form-group text-right">
+				<input type="hidden" name="csrf_token" value="{{ csrf_token('changerlemotDepasse') }}"/>
+				<button type="submit" class="btn btn-primary">Enregistrer ce mot de passe.</button>
+			</div>
+		</form>
+	</div>
+
+{% endblock %}

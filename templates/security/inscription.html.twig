@@ -1,0 +1,68 @@
+
+{% extends 'base.html.twig' %}
+
+{# {% form_theme form 'authentification/forms/themes/inscription.html.twig' %} #}
+
+
+
+{% block body %}
+	<div class ="row mt-4">
+		<div class="col-12 col-sm-12 col-md-4 offset-md-4">
+			<h1 class="text-secondary"><u><b>Inscription</b></u></h1>
+		</div>
+	</div>
+
+	<!-- Formulaire d'inscription -->
+	{% if error is defined %}
+		<div class ="row">
+			<div class="col-12 col-sm-12 col-md-4 offset-md-4 alert alert-danger" role="alert">
+			  {{ error.messageKey|trans(error.messagedata, 'security', "Fr") }}
+			</div>
+		</div>
+	{% endif %}
+
+	<div class="row">
+		
+	</div>
+	
+
+	<div class="col-12 col-sm-12 col-md-4 offset-md-4" style="">
+		{{ form_start ( form  ) }}
+		    <div class="form-row p-2">
+		    	<div class="form-group col-md-12">
+					{{ form_errors(form) }}
+				</div>
+		    	<div class="form-group col-md-12">
+		        	{{ form_label(form.nom) }}
+		        	{{ form_errors(form.nom) }}
+		    		{{ form_widget(form.nom) }}
+		        </div>
+		        <div class="form-group col-md-12">
+		        	{{ form_label(form.prenom) }}
+		        	{{ form_errors(form.prenom) }}
+		        	{{ form_widget(form.prenom) }}
+		        </div>
+		        <div class="form-group col-md-12">
+		        	{{ form_label(form.email) }}
+		    		{{ form_widget(form.email) }}
+		    		{{ form_help(form.email) }}
+		        </div>
+		    	<div class="form-group col-md-12">
+		        	{{ form_label(form.motdepasse.first) }}
+		    		{{ form_widget(form.motdepasse.first) }}
+		    		{{ form_help(form.motdepasse.first) }}	        	
+		        </div>
+		        <div class="form-group col-md-12">
+		        	{{ form_label(form.motdepasse.second) }}
+		    		{{ form_widget(form.motdepasse.second) }}
+		        </div>
+				<div class="form-group col-md-12 text-right">
+					{{ form_label(form.captcha) }}
+					{{ form_widget(form.captcha) }}
+					{{ form_widget(form.save) }}
+		        </div>
+		    </div>
+		{{ form_end(form) }}
+	</div>
+
+{% endblock %}
