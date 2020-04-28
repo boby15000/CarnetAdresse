@@ -1,4 +1,7 @@
 {
+    "beberlei/doctrineextensions": {
+        "version": "v1.2.6"
+    },
     "beelab/recaptcha2-bundle": {
         "version": "2.0",
         "recipe": {

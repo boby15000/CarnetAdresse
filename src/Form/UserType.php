@@ -23,19 +23,37 @@ class UserType extends AbstractType
         $builder
             ->add('nom', TextType::class, [
                 'attr' => [
-                    'placeholder' => "ex: Durand"]])
+                    'placeholder' => "ex: Durand",
+                    'class' => 'form-control-lg'
+                ],
+                'required' => true
+            ])
             ->add('prenom', TextType::class, [
-                'label' => 'Prénom',
                 'attr' => [
-                    'placeholder' => "ex: Martin"]])
+                    'placeholder' => "ex: Martin",
+                    'class' => 'form-control-lg'
+                ],
+                'required' => true,
+                'label' => 'Prénom'               
+            ])
             ->add('email', EmailType::class, [
                 'attr' => [
-                        'placeholder' => "ex: martin.durand@gmail.fr"]])
-            ->add('password', RepeatedType::class, [
+                        'placeholder' => "ex: martin.durand@gmail.fr",
+                        'class' => 'form-control-lg'
+                ],
+                'required' => true,
+                'help' => "L'adresse email doit être valide pour activer le compte."
+            ])
+            ->add('motdepasse', RepeatedType::class, [
+                'options' => ['attr' => ['class' => 'form-control-lg']],
                 'type' => PasswordType::class,
                 'invalid_message' => 'Les mots de passe doivent être identique.',
-                'first_options'  => ['label' => 'Mot de passe'],
+                'first_options'  => [
+                    'label' => 'Mot de passe',
+                    'help' => "Le mot de passe doit comporter minimum 5 caractères",
+                    ],
                 'second_options' => ['label' => 'Confirmez votre mot de passe'],
+                'required' => true
             ])
             ->add('captcha', RecaptchaSubmitType::class, [
                 'error_bubbling' => true,

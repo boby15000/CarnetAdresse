@@ -23,30 +23,25 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
 
-
-    public function FindOneByMail($email)
+    /**
+     * Supprime les comptes inactifs
+     *  SELECT *, DATEDIFF(CURRENT_TIME(), `creerle`) AS agemini FROM `user` WHERE `compteactif` = 0 AND DATEDIFF(CURRENT_TIME(), `creerle`) > 1
+     */
+    public function DeleteInactif()
     {
-        return $this->createQueryBuilder('User')
-            ->Where('User.email = :email')
-            ->setParameter('email', $email)
+        return $this->createQueryBuilder('u')
+            ->delete()
+            ->Where('u.compteactif = 0')
+            ->andWhere('DATEDIFF(CURRENT_TIME(), u.creerle) > 1')
+            //->setParameter('val', $value)
             ->getQuery()
-            ->getOneOrNullResult();
-    }
-
-
-    public function FindOneByClefPublic($keyPublic)
-    {
-        return $this->createQueryBuilder('User')
-            ->Where('User.keyPublic = :keyPublic')
-            ->setParameter('keyPublic', $keyPublic)
-            ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();  
     }
 
 
 
     /**
-     * Used to upgrade (rehash) the user's password automatically over time.
+     * Used to upgrade (rehash) the user's password automatically over time.DATEDIFF(NOW()
      */
     public function upgradePassword(UserInterface $user, string $newEncodedPassword): void
     {
