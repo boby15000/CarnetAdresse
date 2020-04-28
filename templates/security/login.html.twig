@@ -16,15 +16,7 @@
 		{% endif %}
     </div>
 
-    <div class="col-12 col-sm-12 col-md-3" style="">
-    	{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-    		<blockquote class="blockquote">
-				<p class="mb-0">Vous êtes authentifié sous l'adresse mail : {{ app.user.email }}</p>
-				<p class="mb-0">Votre carnet contient {{ nbrContacts }} contacts.</p>
-				<p class="mb-0">Vous vous êtes inscrit le {{  app.user.createdAt|date("D/M/Y à H:I:S") }}.</p>
-			</blockquote>	
-		{% else %}
-
+    <div class="col-12 col-sm-12 col-md-3" style="">	
 			<h1 class="text-secondary"><u><b>Identification</b></u></h1>
 
 			{% if error is defined and not error is null %}
@@ -61,7 +53,6 @@
 				</div>
 			</form>
 
-		{% endif %}
    	</div>
 </div>
 {% endblock %}

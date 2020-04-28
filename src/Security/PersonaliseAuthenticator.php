@@ -102,7 +102,7 @@ class PersonaliseAuthenticator extends AbstractFormLoginAuthenticator implements
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('Contact.Show'));
+        return new RedirectResponse($this->urlGenerator->generate('VoirFiches', ['Letter' => 'A']));
     }
 
     protected function getLoginUrl()

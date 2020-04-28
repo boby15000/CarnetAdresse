@@ -14,10 +14,35 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class FicheRepository extends ServiceEntityRepository
 {
+    
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Fiche::class);
     }
+
+   
+    /**
+     * Retourne les données l'user spécifié "ID" et de la lettre 
+     * @param  [type] $value [description]
+     * @return [type]        [description]
+     */
+    public function findAllByUserAndLetter($user, $letter = 'A')
+    {
+        return $this->createQueryBuilder('f')
+            ->Where('f.nom LIKE :letter')
+            ->setParameter('letter', $letter.'%')
+            ->andWhere('f.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('f.nom', 'ASC')
+            ->getQuery()->getResult();
+    }
+
+
+
+
+
+
 
     // /**
     //  * @return Fiche[] Returns an array of Fiche objects

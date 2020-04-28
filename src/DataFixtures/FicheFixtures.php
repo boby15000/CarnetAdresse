@@ -35,8 +35,9 @@ class FicheFixtures extends Fixture implements FixtureGroupInterface, DependentF
                         ->setNom($faker->lastName())
                         ->setPrenom($faker->firstName())
                         ->setAdresse($faker->address())
-                        ->setTels($faker->phoneNumber())
-                        ->setEmails($faker->email())
+                        ->setTelFixe($faker->phoneNumber())
+                        ->setTelPortable($faker->phoneNumber())
+                        ->setEmail($faker->email())
                         ->setUser($user);
 
                     $manager->persist($fiche);            

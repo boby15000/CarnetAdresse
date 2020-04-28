@@ -83,7 +83,7 @@ class User implements UserInterface
     private $roles = [];
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\fiche", mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Fiche", mappedBy="user", orphanRemoval=true)
      */
     private $fiches;
 

@@ -52,15 +52,21 @@ class Fiche
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
-    private $tels;
+    private $telFixe;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
-    private $emails;
+    private $telPortable;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=255)
+     */
+    private $email;
 
     /**
      * @var datetime
@@ -152,7 +158,7 @@ class Fiche
      */
     public function getNom()
     {
-        return $this->nom;
+        return \ucwords($this->nom);
     }
 
     /**
@@ -172,7 +178,7 @@ class Fiche
      */
     public function getPrenom()
     {
-        return $this->prenom;
+        return \ucwords($this->prenom);
     }
 
     /**
@@ -192,7 +198,7 @@ class Fiche
      */
     public function getAdresse()
     {
-        return $this->adresse;
+        return \ucwords($this->adresse);
     }
 
     /**
@@ -210,19 +216,19 @@ class Fiche
     /**
      * @return string
      */
-    public function getTels()
+    public function getTelFixe()
     {
-        return $this->tels;
+        return $this->telFixe;
     }
 
     /**
-     * @param string $tels
+     * @param string $telFixe
      *
      * @return self
      */
-    public function setTels($tels)
+    public function setTelFixe($telFixe)
     {
-        $this->tels = $tels;
+        $this->telFixe = $telFixe;
 
         return $this;
     }
@@ -230,9 +236,29 @@ class Fiche
     /**
      * @return string
      */
-    public function getEmails()
+    public function getTelPortable()
     {
-        return $this->emails;
+        return $this->telPortable;
+    }
+
+    /**
+     * @param string $telPortable
+     *
+     * @return self
+     */
+    public function setTelPortable($telPortable)
+    {
+        $this->telPortable = $telPortable;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
     }
 
     /**
@@ -240,9 +266,9 @@ class Fiche
      *
      * @return self
      */
-    public function setEmails($emails)
+    public function setEmail($email)
     {
-        $this->emails = $emails;
+        $this->email = \strtolower($email);
 
         return $this;
     }
@@ -272,7 +298,8 @@ class Fiche
      */
     public function getModifierle()
     {
-        return $this->modifierle;
+        
+        return ($this->modifierle === null ) ? $this->creerle : $this->modifierle ;
     }
 
     /**
@@ -302,7 +329,7 @@ class Fiche
 
     public function getNomComplet(): string
     {
-        return $this->Nom . ' ' . $this->Prenom ;
+        return $this->nom . ' ' . $this->prenom ;
     }
 
     /**
@@ -326,8 +353,6 @@ class Fiche
 
         return $this;
     }
-
-
 
 
 }

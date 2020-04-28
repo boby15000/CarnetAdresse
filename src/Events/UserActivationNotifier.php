@@ -79,7 +79,7 @@ class UserActivationNotifier
 	                        ->subject('Demande de réinitialisation du mot de passe.')
 	                        ->html($this->twig->render('security/email/motpasseoublie.email.html.twig', ['url' => $urlPage]));
 
-			$this->mailjet->AddMessage($message)->Send();
+			//$this->mailjet->AddMessage($message)->Send();
 		}
 		
 
