@@ -59,7 +59,7 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Assert\NotBlank(message="Veuillez renseigner votre l'email.")
+     * @Assert\NotBlank(message="Veuillez renseigner votre email.")
      * @Assert\Email(message="L'email '{{ value }}' n'est pas valide.")
      */
     private $email;

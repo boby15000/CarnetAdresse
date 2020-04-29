@@ -1,0 +1,123 @@
+
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+  {# Titre de la page #}
+  <div class="row mt-4">
+    <h1 class="col-12 col-md-6 offset-md-5 text-secondary"><u><b>Liste des Contacts</b></u></h1>
+  </div>
+  {# ---------------- #}
+
+  {#  Menu Alphabet #}
+  <div class="row mt-2">
+    <div class="col-12">
+      <nav>
+        <ul class="pagination justify-content-md-center table-responsive">
+          {% for uneletter in 'A'..'Z' %}
+
+            {% if  uneletter == letter %}
+              <li class="page-item active"><span class="page-link">{{ uneletter }}<span class="sr-only">(current)</span></a></li>
+            {% else %}
+              <li class="page-item"><a class="page-link" href="{{ path('Fiche.voirTout', {'Letter': uneletter}) }}">{{ uneletter | upper }}</a></li>
+            {% endif %}
+
+          {% endfor %}
+        </ul>
+      </nav>
+    </div>
+  </div>
+  {#  Fin du Menu Alphabet #}
+
+
+  {% if fiches | length > 0 %}
+
+        {# Menu Pagination #}
+        <div class="row mt-2">
+          <div class="col-12 ">
+            {{ knp_pagination_render(fiches) }}
+          </div>
+        </div>
+        {# Fin du menu Pagination #}
+
+
+        {# Message d'information pour l'utilisateur #}
+        {% for label, messages in app.flashes(['success', 'warning']) %}
+          {% for message in messages %}
+            <div class="row mt-2">
+              <div class="col-12 col-md-4 offset-md-4 alert alert-{{ label }}" role="alert"> {{ message }} </div>
+            </div>
+          {% endfor %}
+        {% endfor %}   
+        {# Fin du message d'information pour l'utilisateur #}
+
+
+        {# Affichage des fiches #}
+        <div class ="row">
+          {% for fiche in fiches %}
+                <div class="col-12 ml-4 col-md-2 {{ loop.first ? 'ml-md-4' : '' }}">
+                  {# Descriptif de la fiche #}
+                  <div class="row">
+                    <div class="card text-white bg-dark mb-3 mt-3" style="max-width: 19rem;">
+                      <div class="card-header">
+                        {# Debut des liens #}
+                        <div class="float-right">      
+                          {# Lien de modification #}
+                          <a href="{{ path('Fiche.modifier', {id: fiche.id, Letter: letter}) }}"><img src="{{ asset('images/pen.png') }}" width="30" height="30" class="" alt="Modifier"></a>
+                          {# Lien de suppression #}
+                          <a href="{{ path('Fiche.supprimer', {id: fiche.id, Letter: letter}) }}"><img src="{{ asset('images/delete.png') }}" width="20" height="20" class=" " alt="supprimer"></a>  
+                        </div>
+                        {# Fin des liens #}
+
+                        {# Définition du Titre #}
+                        <h5>
+                          {% if fiche.isProfessionel %}
+                            {% if not fiche.libelle is empty %}
+                              {{ fiche.libelle }}  <span class='badge badge-primary'>Pro</span>
+                            {% else %} 
+                              <i>{{ fiche.NomComplet }} <span class='badge badge-primary'>Pro</span>
+                            {% endif %}
+                          {% else %} 
+                            {{ fiche.NomComplet }}
+                          {% endif %} 
+                        </h5>
+                        <p class="text-muted ml-3" style="font-size: 1em;">
+                        {% if fiche.isProfessionel %}
+                          {% if ( not fiche.nom is empty or not fiche.prenom is empty ) %}
+                            <i>{{ fiche.nom}} {{ fiche.prenom }}</i>
+                          {% endif %}
+                        {% else %} 
+                         <i>Née le {{ fiche.dateDeNaissance | date("d/m/Y") }}</i>
+                        {% endif %}
+                        </p>
+                        {# Fin de Définition du Titre #}
+                      </div>
+                      <div class="card-body bg-white text-dark">
+                        <p class="card-text"><i>{{ fiche.adresse }}</i></p>
+                      </div>
+                      <ul class="list-group list-group-flush text-dark">
+                        <li class="list-group-item bg-light">{{ fiche.TelPortable }}</li>
+                        <li class="list-group-item bg-light">{{ fiche.TelFixe }}</li>
+                        <li class="list-group-item bg-light">{{ fiche.email }}</li>
+                      </ul>
+                      <div class="card-footer bg-dark text-muted" style="font-size: 0.91em;">Edité le {{ fiche.getModifierle |date("d/m/Y à H:i:s") }}</div>
+                    </div>
+                  </div>
+                  {# Fin de descriptif de la fiche #}
+                </div>    
+          {% endfor %}
+        </div>
+        {# Fin d'affichage des fiches #}
+
+  {% else %}
+
+        {# Affichage du message lorsqu'ils n'y a aucun enregistrement #}
+        <div class ="row">
+          <div class="col-12 col-md-4 offset-md-4"><b>Aucune fiches enregistrées dont le Nom commence par la lettre {{ letter }}.</b></div>
+        </div>
+
+  {% endif %}
+
+{% endblock %}

@@ -31,10 +31,12 @@ class FicheRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('f')
             ->Where('f.nom LIKE :letter')
+            ->orWhere('f.libelle LIKE :letter')
             ->setParameter('letter', $letter.'%')
             ->andWhere('f.user = :user')
             ->setParameter('user', $user)
             ->orderBy('f.nom', 'ASC')
+            ->orderBy('f.libelle', 'ASC')
             ->getQuery()->getResult();
     }
 

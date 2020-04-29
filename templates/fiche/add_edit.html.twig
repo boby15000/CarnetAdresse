@@ -1,0 +1,88 @@
+
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+  {# Titre de la page #}
+  <div class="row mt-4">
+    <h1 class="col-12 col-md-6 offset-md-5 text-secondary"><u><b>{{ modeEdition ? "Edition d'une Fiche" : "Ajout d'une Nouvelle Fiche" }}</b></u></h1>
+  </div>
+  {# ---------------- #}
+
+
+  {# Message d'information pour l'utilisateur #}
+  {% for label, messages in app.flashes(['success', 'warning']) %}
+    {% for message in messages %}
+      <div class="row mt-2">
+        <div class="col-12 col-md-4 offset-md-4 alert alert-{{ label }}" role="alert"> {{ message }} </div>
+      </div>
+    {% endfor %}
+  {% endfor %}   
+  {# Fin du message d'information pour l'utilisateur #}
+
+
+  {#  Formulaire d'ajout #}
+  <div class="row mt-2">
+    <div class="col-12 col-md-4 offset-md-4">
+      {{ include('fiche/forms/add.form.html.twig') }}
+    </div>
+  </div>
+  {#  Fin Formulaire d'ajout #}
+
+  {# Début de l'insertion du JavaScript #}
+  {% block javascripts %}
+    <script type="text/javascript">
+        $(function () {
+
+
+            $('[data-toggle="popover"]').popover({
+              trigger : 'hover',
+              delay: {show: 500, hide: 100},
+              placement: 'top'             
+            });
+          
+            
+            affichageLibelle();
+
+            $('#fiche_professionel').change(function()
+              { affichageLibelle(); }
+            );
+
+              
+              // Détermine si le champ "Libellé" est affiché
+              function affichageLibelle()
+              {
+                if( $('#fiche_professionel').is(':checked') )
+                  { 
+                    $('#fiche_libelle_Group').removeClass('d-none').addClass('d-block');
+                    $('.fiche_date_naissance_group').removeClass('d-block').addClass('d-none');
+                  } 
+                else 
+                  { 
+                    $('#fiche_libelle_Group').removeClass('d-block').addClass('d-none'); 
+                    $('.fiche_date_naissance_group').removeClass('d-none').addClass('d-block'); 
+                  }
+              }
+
+              // Fonction utilisé pour le Captcha
+              function recaptchaCallback(token) 
+              {
+                var elem = document.querySelector(".g-recaptcha");
+                while ((elem = elem.parentElement) !== null) 
+                {
+                  if (elem.nodeType === Node.ELEMENT_NODE && elem.tagName === 'FORM') 
+                  {
+                    elem.submit();
+                    break;
+                  }
+                }
+              }
+      
+        }); 
+    </script>
+  {% endblock %}
+{# Fin de l'insertion du JavaScript #}
+
+{% endblock %}

@@ -49,8 +49,8 @@ class SecurityController extends AbstractController
         $error = $AuthenticationUtils->getLastAuthenticationError();
 
         // Si authentifier, on redirige vers la liste des contacts.
-       // if ( $this->getUser() !== null ) 
-       // { return $this->redirectToRoute('VoirFiches'); }
+        if ( $this->getUser() !== null ) 
+        { return $this->redirectToRoute('Fiche.voirTout', ['Letter' => 'A']); }
 
         // Récupère le dernier Identifiant saisi par l'utilisateur.
         $lastUsername = $AuthenticationUtils->getLastUsername();

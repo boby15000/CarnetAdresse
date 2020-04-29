@@ -1,0 +1,23 @@
+
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+
+	{# Titre de la page #}
+	<div class="row mt-4">
+		<h1 class="col-12 col-md-6 offset-md-5 text-secondary"><u><b>Erreur de redirection</b></u></h1>
+	</div>
+	{# ---------------- #}
+
+    
+	{# Information sur l'erreur #}
+	<div class="row mt-2">
+	  <div class="col-12 ">
+	    <p>Impossible de déterminé la page demandé. Vérifier l'url.</p>
+		<p>Pour retourner au site, <a href="{{ path('homepage') }}">clique ici</a></p>
+	  </div>
+	</div>
+	{# Fin d'information sur l'erreur #}
+
+{% endblock %}

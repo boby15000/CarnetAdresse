@@ -1,6 +1,18 @@
+
+@font-face {
+ 	font-family: "Ecriture_Ecole"; 	
+ 	src: url('font/graphecrit.ttf'); 
+ }
+
+
 html, body {
   background-image: url("../Images/fond.jpg");
-  background-size: cover;
+  background-size: cover;  
+}
 
-  
+
+
+.ecritureEcole {
+	font-family:Ecriture_Ecole;
+	font-size: 2em;  }
 }

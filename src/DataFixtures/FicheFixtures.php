@@ -35,6 +35,7 @@ class FicheFixtures extends Fixture implements FixtureGroupInterface, DependentF
                         ->setNom($faker->lastName())
                         ->setPrenom($faker->firstName())
                         ->setAdresse($faker->address())
+                        ->setDateDeNaissance($faker->dateTimeBetween('-40 years',new \DateTime('2005-05-03')))
                         ->setTelFixe($faker->phoneNumber())
                         ->setTelPortable($faker->phoneNumber())
                         ->setEmail($faker->email())
