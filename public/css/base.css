@@ -1,7 +1,7 @@
 
 @font-face {
  	font-family: "Ecriture_Ecole"; 	
- 	src: url('font/graphecrit.ttf'); 
+ 	src: url('font/Kingthings_Foundation.ttf'); 
  }
 
 
@@ -12,7 +12,7 @@ html, body {
 
 
 
-.ecritureEcole {
+.ecritureTitre {
 	font-family:Ecriture_Ecole;
-	font-size: 2em;  }
+	font-size: 3em;  }
 }

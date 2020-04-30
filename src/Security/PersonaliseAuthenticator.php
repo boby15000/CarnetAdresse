@@ -109,4 +109,9 @@ class PersonaliseAuthenticator extends AbstractFormLoginAuthenticator implements
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
+
+    public function supportsRememberMe()
+    {
+        return true;
+    }
 }
