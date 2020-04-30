@@ -1,58 +1,81 @@
 {% extends 'base.html.twig' %}
 
 
-
 {% block body %}
-<div class ="row mt-4">
-	<div class="d-none d-md-block col-md-6 offset-md-1">
-		<blockquote class="blockquote">
-  			<span class="display-4"><u>Bienvenue sur Carnet D'adresse.</u></span>
-  				<p class="h3">Ce site permet à chacun de retrouver facilement ses contact.</p>
-  		</blockquote>
 
-  		<!-- Affichage message après inscription -->
-		{% if inscriptionSuccess is defined %}
-			<div class="alert alert-success" role="alert">Merci de vous êtes inscrit. vous pouvez désormais vous connecter.</div>
-		{% endif %}
-    </div>
+	
+	<div class ="row mt-5">
 
-    <div class="col-12 col-sm-12 col-md-3" style="">	
-			<h1 class="text-secondary"><u><b>Identification</b></u></h1>
-
-			{% if error is defined and not error is null %}
-				<div class="alert alert-warning" role="alert">
-				  {{ error.messageKey|trans(error.messagedata, 'security', "Fr") }}
-				</div>
+		{# Partie explicative du site #}
+		<div class="col-md-6 ml-md-4 d-none d-md-block mt-4">
+			<h1 class="ecritureTitre"><u>Bienvenue sur Carnet D'adresse.</u></h1>
+			<blockquote class="blockquote">
+  				<p class="h3">Ce site permet à chacun de retrouver facilement ses contact. Ce service est entièrement gratuit.</p>
+  				<p>Les informations postées sur ce site reste à la proprieté de l'utilisateur. Celle-ci ne seront transmise à aucun tiers tel qu'il soit.</p>
+  				<p>C'est pour cette raison que j'ai réalisé se site afin e protéger nos informations sur la divulgation des données personnel à but lucratif par certains sites.</p>
+  			</blockquote>
+  			
+  			{# Affichage message après inscription #}
+  			{% if inscriptionSuccess is defined %}
+				<div class="alert alert-success" role="alert">Merci de vous êtes inscrit. vous pouvez désormais vous connecter.</div>
 			{% endif %}
+			{# Fin d'affichage message après inscription #}
 
-			<!-- Affichage message après inscription -->
-			{% if result is defined and not result is null %}
-				<div class ="row">
-					  <div class="col-12 alert {{ result.success ? 'alert-success' : 'alert-warning' }}" role="alert">{{ result.message }}</div>
-				</div>
-			{% endif %}
+		</div>
+		{# Fin de la partie explicative du site #}
 
-			<form action="{{ path('login') }}" method="post">
-				<div class="form-group">
-				    <label for="username">Email</label>
-						<input type="email" value="{{ last_Username is defined ? last_Username }}" class="form-control" id="username" aria-describedby="emailHelp" placeholder="Votre email" name="email">    
-				    <small id="emailHelp" class="form-text text-muted d-none d-md-block">Nous ne partagerons jamais votre e-mail avec quelqu'un d'autre.</small>
-				</div>
-				<div class="form-group">
-				    <label for="password">Mot de Passe</label>
-				    <input type="password" class="form-control" id="password" placeholder="Votre mot de passe" name="password">
-				    <a href="{{ path('MotDePasseOublie') }}">Mot de passe oublié</a>
-				</div>
-				<div class="form-group form-check">
-				    <input type="checkbox" class="form-check-input" id="RememberMe">
-				    <label class="form-check-label" for="RememberMe">Se souvenir de moi</label>
-				</div>
-				<div class="form-group text-right">
-					<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-					<button type="submit" class="btn btn-secondary text-right">Se connecter</button>
-				</div>
-			</form>
 
-   	</div>
-</div>
+
+		{# Formulaire d'identification #}
+		<div class="col-12 col-sm-8 col-md-3 offset-sm-2 mt-4">
+			<div class="card text-white bg-dark mb-3" style="max-width: 22rem;">
+			  <div class="card-header"><h1 class="ecritureTitre text-center"><u>Identification</u></h1></div>
+			  <div class="card-body">
+			    <h5 class="card-title">
+
+					{# Affichage des messages d'erreur pour l'identification #}
+					{% if error is defined and not error is null %}
+						<div class="alert alert-warning" role="alert">
+						  {{ error.messageKey|trans(error.messagedata, 'security', "Fr") }}
+						</div>
+					{% endif %}
+					{# Fin d'affichage des messages d'erreur pour l'identification #}
+
+					<!-- Affichage message après inscription -->
+					{% if result is defined and not result is null %}
+						<div class="alert {{ result.success ? 'alert-success' : 'alert-warning' }}" role="alert">{{ result.message }}</div>
+					{% endif %}
+					<!-- Fin d'affichage message après inscription -->
+
+			    </h5>
+			    <div class="card-text">
+					{# Début du formulaire #}
+					<form action="{{ path('login') }}" method="post">
+						<div class="form-group">
+						    <label for="username">Email</label>
+								<input type="email" value="{{ last_Username is defined ? last_Username }}" class="form-control" id="username" aria-describedby="emailHelp" placeholder="Votre email" name="email">
+						</div>
+						<div class="form-group">
+						    <label for="password">Mot de Passe</label>
+						    <input type="password" class="form-control" id="password" placeholder="Votre mot de passe" name="password">
+						    <a href="{{ path('MotDePasseOublie') }}">Mot de passe oublié</a>
+						</div>
+						<div class="form-group form-check">
+						    <input type="checkbox" class="form-check-input" id="RememberMe">
+						    <label class="form-check-label" for="RememberMe">Se souvenir de moi</label>
+						</div>
+						<div class="form-group text-right">
+							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+							<button type="submit" class="btn btn-secondary text-right">Se connecter</button>
+						</div>
+					</form>
+					{# Fin du formulaire #}
+			    </div>
+			  </div>
+			</div>
+
+	   	</div>
+
+	</div>
+
 {% endblock %}

@@ -22,6 +22,8 @@ class UserType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class, [
+                'label_attr' => [ 'class' => 'font-weight-bold'
+                ],
                 'attr' => [
                     'placeholder' => "ex: Durand",
                     'class' => 'form-control-lg'
@@ -29,6 +31,8 @@ class UserType extends AbstractType
                 'required' => true
             ])
             ->add('prenom', TextType::class, [
+                'label_attr' => [ 'class' => 'font-weight-bold'
+                ],
                 'attr' => [
                     'placeholder' => "ex: Martin",
                     'class' => 'form-control-lg'
@@ -37,6 +41,8 @@ class UserType extends AbstractType
                 'label' => 'Prénom'               
             ])
             ->add('email', EmailType::class, [
+                'label_attr' => [ 'class' => 'font-weight-bold'
+                ],
                 'attr' => [
                         'placeholder' => "ex: martin.durand@gmail.fr",
                         'class' => 'form-control-lg'
@@ -45,7 +51,9 @@ class UserType extends AbstractType
                 'help' => "L'adresse email doit être valide pour activer le compte."
             ])
             ->add('motdepasse', RepeatedType::class, [
-                'options' => ['attr' => ['class' => 'form-control-lg']],
+                'options' => ['attr' => ['class' => 'form-control-lg'],
+                            'label_attr' => [ 'class' => 'font-weight-bold'],
+                ],
                 'type' => PasswordType::class,
                 'invalid_message' => 'Les mots de passe doivent être identique.',
                 'first_options'  => [
