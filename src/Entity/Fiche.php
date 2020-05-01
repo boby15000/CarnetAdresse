@@ -3,11 +3,14 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\FicheRepository")
  * @ORM\HasLifecycleCallbacks()
+ * @UniqueEntity(fields= {"nom", "prenom", "dateDeNaissance" }, message="Cette fiche existe déjà.")
+ * @UniqueEntity(fields= {"telPortable"}, message="Ce numéro de téléphone portable est déjà attribué.")
  * @Assert\Expression(
  *     "this.getTelFixe() !== null or this.getTelPortable() !== null",
  *     message="Au moins un téléphone doit-être renseignés."
@@ -116,8 +119,7 @@ class Fiche
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="fiches")
      */
     private $user;
-
-
+  
 
 
 
@@ -381,7 +383,7 @@ class Fiche
 
     public function getNomComplet(): string
     {
-        return \strtoupper($this->nom . ' ' . $this->prenom) ;
+        return $this->getNom() . ' ' . $this->getPrenom() ;
     }
 
     /**
@@ -408,5 +410,13 @@ class Fiche
 
         return $this;
     }
+
+
+    public function __toString()
+    {
+        return $this->getNomComplet();
+    }
+
+
 
 }

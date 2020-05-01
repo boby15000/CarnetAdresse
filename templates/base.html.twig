@@ -17,11 +17,11 @@
 
     	{# Debut du Menu #}
       <nav class="navbar navbar-expand-lg navbar-dark text-white bg-dark">
-  		  <a class="navbar-brand" href="/"><img src="{{ asset('images/logo.png') }}" width="30" height="30" class="d-inline-block align-top" alt="">Carnet d'Adresse</a>
+  		  <a class="navbar-brand ecritureTitreNavLogo" href="/"><img src="{{ asset('images/logo.png') }}" width="30" height="30" class="d-inline-block align-top mr-md-3" alt="">Carnet d'Adresse</a>
   		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
   		    <span class="navbar-toggler-icon"></span>
   		  </button>
-		  <div class="collapse navbar-collapse" id="navbarText">
+		  <div class="collapse navbar-collapse ecritureTitreNav" id="navbarText">
 		    <ul class="navbar-nav mr-auto">
 
           {# Affichage du menu de gauche lorsqu'on est authentifié #}
@@ -33,7 +33,7 @@
               <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Ajouter une nouvel fiche</a>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="{{ path('Fiche.ajouter') }}">Par moi-même</a>
-                <a class="dropdown-item" href="#">Par un proche</a>
+                <a class="dropdown-item" href="{{ path('Fiche.Invitation') }}">Par un proche</a>
               </div>
             </li>
             <li class="nav-item">

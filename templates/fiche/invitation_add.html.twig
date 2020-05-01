@@ -7,7 +7,8 @@
 
   {# Titre de la page #}
   <div class="row mt-4">
-    <h1 class="col-12 col-md-6 offset-md-4 text-secondary ecritureTitre"><u><b>{{ modeEdition ? "Edition d'une Fiche" : "Ajout d'une Nouvelle Fiche" }}</b></u></h1>
+    <h1 class="col-12 col-md-6 offset-md-4 text-secondary ecritureTitre"><u><b>Ajout d'une nouvelle fiche</b></u></h1>
+    <p></p>
   </div>
   {# ---------------- #}
 
@@ -21,14 +22,16 @@
         </div>
       {% endfor %}
     {% endfor %}
-  {% endif %}   
+  {% endif %}
   {# Fin du message d'information pour l'utilisateur #}
 
 
   {#  Formulaire d'ajout #}
   <div class="row mt-2">
     <div class="col-12 col-md-4 offset-md-4">
-      {{ include('fiche/forms/add.form.html.twig') }}
+      {% if form is defined %}
+        {{ include('fiche/forms/add.form.html.twig') }}
+      {% endif %}  
     </div>
   </div>
   {#  Fin Formulaire d'ajout #}
