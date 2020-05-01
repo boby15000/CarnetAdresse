@@ -13,7 +13,7 @@ use Twig\Environment;
 /**
  * Class Evenement Doctrine pour la Class USER.
  */
-class UserActivationNotifier
+class UserNotifier
 {
 	
 	Const ROUTE_MOTDEPASSE = 'MotDePasseOublie';

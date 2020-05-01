@@ -10,7 +10,7 @@
 		<div class="col-md-6 ml-md-4 d-none d-md-block mt-4">
 			<h1 class="ecritureTitre"><u>Bienvenue sur Carnet D'adresse.</u></h1>
 			<blockquote class="blockquote">
-  				<p class="h3">Ce site permet à chacun de retrouver facilement ses contact. Ce service est entièrement gratuit.</p>
+  				<p class="h3">Ce site permet à chacun de retrouver facilement ses contacts. Ce service est entièrement gratuit.</p>
   				<p>Les informations postées sur ce site reste à la proprieté de l'utilisateur. Celle-ci ne seront transmise à aucun tiers tel qu'il soit.</p>
   				<p>C'est pour cette raison que j'ai réalisé se site afin e protéger nos informations sur la divulgation des données personnel à but lucratif par certains sites.</p>
   			</blockquote>
@@ -20,6 +20,16 @@
 				<div class="alert alert-success" role="alert">Merci de vous êtes inscrit. vous pouvez désormais vous connecter.</div>
 			{% endif %}
 			{# Fin d'affichage message après inscription #}
+
+			{# Message d'information pour l'utilisateur #}
+			{% if app.request.hasPreviousSession %}
+				{% for label, messages in app.flashes(['success', 'warning']) %}
+					{% for message in messages %}
+						<div class="alert alert-{{ label }}" role="alert"> {{ message|raw }} </div>
+					{% endfor %}
+				{% endfor %}
+			{% endif %}
+			{# Fin du message d'information pour l'utilisateur #}
 
 		</div>
 		{# Fin de la partie explicative du site #}
@@ -46,6 +56,18 @@
 						<div class="alert {{ result.success ? 'alert-success' : 'alert-warning' }}" role="alert">{{ result.message }}</div>
 					{% endif %}
 					<!-- Fin d'affichage message après inscription -->
+
+					  {# Message d'information pour l'utilisateur #}
+					  {% if app.request.hasPreviousSession %}
+					    {% for label, messages in app.flashes(['success', 'warning']) %}
+					      {% for message in messages %}
+					        <div class="row mt-2">
+					          <div class="col-12 col-md-4 offset-md-4 alert alert-{{ label }}" role="alert"> {{ message|raw }} </div>
+					        </div>
+					      {% endfor %}
+					    {% endfor %}
+					  {% endif %}
+					  {# Fin du message d'information pour l'utilisateur #}
 
 			    </h5>
 			    <div class="card-text">

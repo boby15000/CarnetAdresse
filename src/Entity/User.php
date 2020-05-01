@@ -105,6 +105,11 @@ class User implements UserInterface
      */
     private $clefpublic;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Invitation", mappedBy="user", orphanRemoval=true)
+     */
+    private $invitations;
+
 
 
   
@@ -344,7 +349,7 @@ class User implements UserInterface
 
     
 
-/* --- DECLARATION DES FONCTIONS --- */
+    /* --- DECLARATION DES FONCTIONS --- */
 
 
 
@@ -355,6 +360,7 @@ class User implements UserInterface
         $this->compteactif = false;
         $this->creerle = new \Datetime();
         $this->fiches = new ArrayCollection();
+        $this->invitations = new ArrayCollection();
     }
 
     /**
@@ -403,6 +409,37 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($fich->getUser() === $this) {
                 $fich->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Invitation[]
+     */
+    public function getInvitations(): Collection
+    {
+        return $this->invitations;
+    }
+
+    public function addInvitation(Invitation $invitation): self
+    {
+        if (!$this->invitations->contains($invitation)) {
+            $this->invitations[] = $invitation;
+            $invitation->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvitation(Invitation $invitation): self
+    {
+        if ($this->invitations->contains($invitation)) {
+            $this->invitations->removeElement($invitation);
+            // set the owning side to null (unless already changed)
+            if ($invitation->getUser() === $this) {
+                $invitation->setUser(null);
             }
         }
 

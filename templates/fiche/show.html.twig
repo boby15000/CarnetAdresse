@@ -7,7 +7,7 @@
 
   {# Titre de la page #}
   <div class="row mt-4">
-    <h1 class="col-12 col-md-6 offset-md-5 text-secondary"><u><b>Liste des Contacts</b></u></h1>
+    <h1 class="col-12 col-md-6 offset-md-5 text-secondary ecritureTitre"><u><b>Liste des Contacts</b></u></h1>
   </div>
   {# ---------------- #}
 
@@ -44,13 +44,15 @@
 
 
         {# Message d'information pour l'utilisateur #}
-        {% for label, messages in app.flashes(['success', 'warning']) %}
-          {% for message in messages %}
-            <div class="row mt-2">
-              <div class="col-12 col-md-4 offset-md-4 alert alert-{{ label }}" role="alert"> {{ message }} </div>
-            </div>
+        {% if app.request.hasPreviousSession %}
+          {% for label, messages in app.flashes(['success', 'warning']) %}
+            {% for message in messages %}
+              <div class="row mt-2">
+                <div class="col-12 col-md-4 offset-md-4 alert alert-{{ label }}" role="alert"> {{ message|raw }} </div>
+              </div>
+            {% endfor %}
           {% endfor %}
-        {% endfor %}   
+        {% endif %}   
         {# Fin du message d'information pour l'utilisateur #}
 
 
@@ -72,7 +74,7 @@
                         {# Fin des liens #}
 
                         {# Définition du Titre #}
-                        <h5>
+                        <h5 class="ecritureTitreNavLogo">
                           {% if fiche.isProfessionel %}
                             {% if not fiche.libelle is empty %}
                               {{ fiche.libelle }}  <span class='badge badge-primary'>Pro</span>

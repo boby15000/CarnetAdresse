@@ -11,8 +11,22 @@ html, body {
 }
 
 
+.ecritureTitreNav {
+	font-family:Ecriture_Ecole;
+	font-size: 1.2em;
+}
+
+.ecritureTitreNavLogo {
+	font-family:Ecriture_Ecole;
+	font-size: 1.5em;
+}
 
 .ecritureTitre {
 	font-family:Ecriture_Ecole;
 	font-size: 3em;  }
+}
+
+
+input:required {
+  border: 5px dashed red;
 }

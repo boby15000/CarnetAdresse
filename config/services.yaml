@@ -35,7 +35,13 @@ services:
             $emailName: '%env(EMAIL_NAME)%'
         autowire: true
 
-    App\Events\UserActivationNotifier:
+    #App\Form\ChangeMotDePasseType:
+        #arguments:
+            #$request_stack: '@request_stack'
+        #autowire: true
+
+
+    App\Events\UserNotifier:
         arguments:
             $request_stack: '@request_stack'
         tags:
@@ -51,5 +57,17 @@ services:
                 entity: 'App\Entity\User'
                 lazy: true
                 method: 'SendMailMotDePasseOublie'
+
+
+    App\Events\InvitationNotifier:
+        arguments:
+            $request_stack: '@request_stack'
+        tags:
+            - 
+                name: 'doctrine.orm.entity_listener'
+                event: 'postPersist'
+                entity: 'App\Entity\Invitation'
+                lazy: true
+                method: 'SendMail'
         
             
