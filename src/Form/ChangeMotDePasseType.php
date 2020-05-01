@@ -66,9 +66,8 @@ class ChangeMotDePasseType extends AbstractType
                         'class' => 'form-control-lg'
                     ],
                     'required' => true,
-                    'label' => 'Votre mot de passe actuel',
-                    ]
-                ])
+                    'label' => 'Votre mot de passe actuel'
+                ]);
             }       
 
     }
