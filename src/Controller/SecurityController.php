@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\ContactType;
 use App\Form\UserType;
 use App\Service\Email\Mailjet;
+use App\Service\Email\NewMessage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,6 +35,48 @@ class SecurityController extends AbstractController
     }
 
 
+
+/**************************************************************************************************************************/
+
+
+    /**
+     * Page Contact
+     * 
+     * @Route("/Contact", name="Contact")
+     * @return Symfony\Component\HttpFoundation\Response;
+     */
+    public function Contact(Request $request, Mailjet $mailjet)
+    {
+        // On crée le formulaire de contact
+        $form = $this->createForm(ContactType::class);
+        $form->handleRequest($request);
+        // Controle si le formulaire est émis.
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
+            
+        // On récupére les données du formulaire et on initie Doctrine.
+        $credentials = $form->getData();
+
+        // Envoyer l'email  
+        $message = $mailjet->NewMessage()
+                    ->to($this->getParameter('Email_Webmaster'))
+                    ->replyTo( \strtolower($credentials['de'])  ) 
+                    ->subject('Email du site Carnet-Adresse.fr')
+                    ->html($credentials['message']);
+
+
+         if ( $mailjet->AddMessage($message)->Send() )
+         { $this->addFlash('success',"L'email est bien envoyé.<br> Si vous avez noté votre email vous recevrez une réponse."); }
+         else
+         { $this->addFlash('warning',"Echec de l'envoie de l'email."); }  
+            
+            return $this->redirectToRoute('login');
+        }
+        
+        // Retourne la page d'inscription.
+        return $this->render('security/contact.html.twig', ['form' => $form->createView()]);
+        
+    }
 
 /**************************************************************************************************************************/
 

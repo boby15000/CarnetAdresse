@@ -36,7 +36,8 @@ class ContactType extends AbstractType
                 ],
                 'attr' => [
                     'placeholder' => "Votre message",
-                    'class' => 'form-control-lg'
+                    'class' => 'form-control-lg',
+                    'maxlength' => 1000
                 ],
                 'constraints' => [
                     new NotBlank(['message' => 'Le message doit être renseigné.']),

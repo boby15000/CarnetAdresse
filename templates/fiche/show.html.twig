@@ -91,7 +91,7 @@
                             <i>{{ fiche.nom}} {{ fiche.prenom }}</i>
                           {% endif %}
                         {% else %} 
-                         <i>Née le {{ fiche.dateDeNaissance | date("d/m/Y") }}</i>
+                         <i>{{ age }} au {{ fiche.dateDeNaissance | date("d/m/Y") }}</i>
                         {% endif %}
                         </p>
                         {# Fin de Définition du Titre #}

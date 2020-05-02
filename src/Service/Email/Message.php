@@ -65,6 +65,34 @@ class Message
 	}
 
 
+	public function cc(string $email, string $name = ''): self
+	{
+		$this->message['cc'][$this->indiceTo] = ['Email' => $email, 'Name' => $name];
+
+		$this->indiceTo++;
+		
+		return $this;
+	}
+
+
+	public function bcc(string $email, string $name = ''): self
+	{
+		$this->message['To'][$this->indiceTo] = ['Email' => $email, 'Name' => $name];
+
+		$this->indiceTo++;
+		
+		return $this;
+	}
+
+
+	public function replyTo(string $email, string $name = ''): self
+	{
+		$this->message['ReplyTo'] = ['Email' => $email, 'Name' => $name];
+		
+		return $this;
+	}
+
+
 	public function toMulti(array $email): self
 	{
 		foreach ($email as $key => $value) {
