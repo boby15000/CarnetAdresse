@@ -5,9 +5,77 @@
 {% block body %}
 	<div class ="row mt-4">
 		<div class="col-12 col-sm-12 col-md-4 offset-md-4">
-			<h1 class="text-secondary"><u><b>Votre nouveau mot de passe</b></u></h1>
+			<h1 class="text-secondary ecritureTitre"><u><b>Votre nouveau mot de passe</b></u></h1>
 		</div>
 	</div>
+
+
+	{# Message d'information pour l'utilisateur #}
+	{% if app.request.hasPreviousSession %}
+		{% for label, messages in app.flashes(['success', 'warning']) %}
+			{% for message in messages %}
+				<div class ="row">
+					<div class="col-12 col-sm-12 alert alert-{{ label }}" role="alert"> {{ message|raw }} </div>
+				</div>
+			{% endfor %}
+		{% endfor %}
+	{% endif %}
+	{# Fin du message d'information pour l'utilisateur #}
+
+
+
+		{# Affichage du formulaire d'inscription #}
+		<div class="col-12 col-md-4 offset-md-4" style="">
+			{{ form_start ( form  ) }}
+			    <div class="form-row">
+			    	<div class="form-group col-md-12">
+						{{ form_errors(form) }}
+					</div>
+			    	<div class="form-group col-md-12">
+			        	{{ form_label(form.motdepasse.first) }}
+			    		{{ form_widget(form.motdepasse.first) }}
+			    		{{ form_help(form.motdepasse.first) }}	        	
+			        </div>
+			        <div class="form-group col-md-12">
+			        	{{ form_label(form.motdepasse.second) }}
+			    		{{ form_widget(form.motdepasse.second) }}
+			        </div>
+					<div class="form-group col-md-12 text-right">
+						{{ form_label(form.captcha) }}
+						{{ form_widget(form.captcha) }}
+						{{ form_widget(form.save) }}
+			        </div>
+			    </div>
+			{{ form_end(form) }}
+		</div>
+		{# Fin d'affichage du formulaire d'inscription #}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	<!-- Affichage message après inscription -->
 	{% if result is defined and not result is null %}

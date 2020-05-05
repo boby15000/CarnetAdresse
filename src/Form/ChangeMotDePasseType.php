@@ -44,6 +44,7 @@ class ChangeMotDePasseType extends AbstractType
                     'help' => "Le mot de passe doit comporter minimum 5 caractères",
                     ],
                 'second_options' => ['label' => 'Confirmez votre mot de passe'],
+                'error_bubbling' => true,
                 'required' => true
             ])
             ->add('captcha', RecaptchaSubmitType::class, [

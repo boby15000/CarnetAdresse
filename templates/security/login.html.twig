@@ -15,11 +15,6 @@
   				<p>C'est pour cette raison que j'ai réalisé se site afin e protéger nos informations sur la divulgation des données personnel à but lucratif par certains sites.</p>
   			</blockquote>
   			
-  			{# Affichage message après inscription #}
-  			{% if inscriptionSuccess is defined %}
-				<div class="alert alert-success" role="alert">Merci de vous êtes inscrit. vous pouvez désormais vous connecter.</div>
-			{% endif %}
-			{# Fin d'affichage message après inscription #}
 
 			{# Message d'information pour l'utilisateur #}
 			{% if app.request.hasPreviousSession %}
@@ -50,12 +45,7 @@
 						</div>
 					{% endif %}
 					{# Fin d'affichage des messages d'erreur pour l'identification #}
-
-					<!-- Affichage message après inscription -->
-					{% if result is defined and not result is null %}
-						<div class="alert {{ result.success ? 'alert-success' : 'alert-warning' }}" role="alert">{{ result.message }}</div>
-					{% endif %}
-					<!-- Fin d'affichage message après inscription -->
+					
 
 					  {# Message d'information pour l'utilisateur #}
 					  {% if app.request.hasPreviousSession %}

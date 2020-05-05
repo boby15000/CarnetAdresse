@@ -36,15 +36,8 @@ services:
             $emailName: '%env(EMAIL_NAME)%'
         autowire: true
 
-    #App\Form\ChangeMotDePasseType:
-        #arguments:
-            #$request_stack: '@request_stack'
-        #autowire: true
-
-
+    
     App\Events\UserNotifier:
-        arguments:
-            $request_stack: '@request_stack'
         tags:
             - 
                 name: 'doctrine.orm.entity_listener'

@@ -111,6 +111,7 @@ class User implements UserInterface
     private $invitations;
 
 
+    public $tag;
 
   
 

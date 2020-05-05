@@ -22,6 +22,9 @@
   		    <span class="navbar-toggler-icon"></span>
   		  </button>
 		  <div class="collapse navbar-collapse ecritureTitreNav" id="navbarText">
+        <span class="navbar-text" >
+          <a class="nav-link" href="{{ path('Contact') }}">Contact</a>
+        </span>
 		    <ul class="navbar-nav mr-auto">
 
           {# Affichage du menu de gauche lorsqu'on est authentifié #}
@@ -38,15 +41,9 @@
             </li>
           {% endif %}
           {# Fin d'affichage du menu de gauche lorsqu'on est authentifié #}
-
-          <li class="nav-item">
-            <a class="nav-link" href="{{ path('Contact') }}">Contact</a>
-          </li>
-
 		    </ul>
 
           {# Affichage du menu de droite lorsqu'on est authentifié #}
-        
   		    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
           <ul class="navbar-nav mr-md-3">
             <li class="nav-item dropdown">

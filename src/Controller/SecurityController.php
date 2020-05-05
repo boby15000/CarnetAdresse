@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\ChangeMotDePasseType;
 use App\Form\ContactType;
 use App\Form\UserType;
 use App\Service\Email\Mailjet;
@@ -124,6 +125,7 @@ class SecurityController extends AbstractController
         // Controle si le formulaire est émis.
         if ($form->isSubmitted() && $form->isValid()) 
         {
+            dump($user);
             // Encode le mot de passe.
             $user->setMotdepasse($passwordEncoder->EncodePassword($user, $user->getMotdepasse() )); 
             // Enregistre le nouvel utilisateur.
@@ -131,9 +133,13 @@ class SecurityController extends AbstractController
           	$em->persist($user);
             $em->flush();
 
-            $this->result = ( !$user->getId() ) ? ['success'=> false, 'message' => "Erreur lors de l'inscription."] : ['success'=> true, 'message' => "Votre inscription est enregistré. Merci d'activer votre compte."] ;
+            if ( !$user->getId() && !$user->tag )
+            { $this->addFlash('warning',"Erreur lors de l'inscription."); }
+            else
+            { $this->addFlash('success',"Votre inscription est enregistré.<br>Merci d'activer votre compte."); }  
 
-            return $this->render('security/login.html.twig', ['result' => $this->result]);
+       
+            return $this->render('security/login.html.twig');
         }
         
 
@@ -175,11 +181,10 @@ class SecurityController extends AbstractController
 		$em = $this->GetDoctrine()->getManager();
 		$em->flush();
 
-
-        $this->result = ['success'=> true, 'message' => "Votre compte est activé."];
+        $this->addFlash('success',"Votre compte est activé.");
 
         // Retourne la page login.
-        return $this->render('security/login.html.twig',['result' => $this->result]);
+        return $this->render('security/login.html.twig');
 
     }
 
@@ -212,18 +217,23 @@ class SecurityController extends AbstractController
             // Controle que l'utilisateur n'est pas null.
             if ( $user === null )
             { 
-                $this->result = ['success'=> false, 'message' => "Impossible d'identifier le compte de l'utilisateur."]; 
-                return $this->render('security/motpasseoublie.html.twig',['result' => $this->result]);
+                $this->addFlash('warning',"Impossible d'identifier le compte de l'utilisateur"); 
+                return $this->render('security/motpasseoublie.html.twig');
             }
 
             // Génére la clef.
             $user->GenerateKeyPublic();
             // Enregistre les modifications, et envoie le mail grace aux evenements.
-            $em = $this->GetDoctrine()->getManager();
+            $em = $this->GetDoctrine()->GetManager(); // Attribut un "ObjectManager".
+            $em->persist($user);
             $em->flush();
+dump($user);
+            if ( !$user->tag )
+            { $this->addFlash('warning',"Erreur lors de l'envoie du lien pour la modification du mot de passe'."); }
+            else
+            { $this->addFlash('success',"Un lien vient de vous être envoyé par email.<br>Celui-ci est valide 20 minutes"); }  
 
-            $this->result = ['success'=> true, 'message' => "Un email vient de vous être envoyé."]; 
-            return $this->render('security/motpasseoublie.html.twig',['result' => $this->result]);
+            return $this->render('security/motpasseoublie.html.twig');
         }
 
     	// Retourne la page MotDePasseOublie.
@@ -246,53 +256,40 @@ class SecurityController extends AbstractController
      */
     public function ChangerLeMotDePasse($clefPublic, Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {
-        // On récupére le csrf.
-        $csrf_token = $request->request->get('csrf_token');
-
-        // Controle si le formulaire est émis et que le csrf est valide.
-        if ( $request->getMethod() === $request::METHOD_POST && $this->isCsrfTokenValid('changerlemotDepasse', $csrf_token) ) 
+       
+        $form = $this->createForm(ChangeMotDePasseType::class);
+        $form->handleRequest($request);
+        // Controle si le formulaire est émis.
+        if ($form->isSubmitted() && $form->isValid()) 
         {
-            // Controle que le mot de passe n'est pas null.
-            if ( $request->request->get('MotDePasse1') === null )
-            { 
-                $this->result = ['success'=> false, 'message' => "Le mot de passe ne peut être vide."]; 
-                return $this->render('security/changerlemotDepasse.html.twig',['clefpublic' => $clefPublic, 'result' => $this->result]);
-            }
-
-            // Controle que les deux mots de passe sont identique.
-            if ( $request->request->get('MotDePasse1') === $request->request->get('MotDePasse2') )
-            { 
-                $this->result = ['success'=> false, 'message' => "Les mots de passe sont différents."]; 
-                return $this->render('security/changerlemotDepasse.html.twig',['clefpublic' => $clefPublic, 'result' => $this->result]);
-            }
-
+            // On récupére les données du formulaire et on initie Doctrine.
+            $credentials = $form->getData();
             // On récupére l'utilisateur en fonction de la Clef Publique.
             $user = $this->GetDoctrine()->getRepository(User::class)->findOneBy(['clefpublic' => $clefPublic]);
 
             // Controle que l'utilisateur n'est pas null.
             if ( $user === null )
             { 
-                $this->result = ['success'=> false, 'message' => "Impossible d'identifier le compte de l'utilisateur."]; 
-                return $this->render('security/changerlemotDepasse.html.twig',['clefpublic' => $clefPublic, 'result' => $this->result]);
+                $this->addFlash('warning',"Impossible d'identifier le compte de l'utilisateur"); 
+                return $this->render('security/changerlemotDepasse.html.twig',['form' => $form->createView()]);
             }
 
+            // Change le mot de passe.
+            $user->setMotdepasse($passwordEncoder->EncodePassword($user, $rcredentials('MotDePasse') ));
+            // Supprimer la clef.
+            $user->setClefpublic(null);
+            // Enregistre les modifications.
+            $em = $this->GetDoctrine()->getManager();
+            $em->flush();
 
-        // Change le mot de passe.
-        $user->setMotdepasse($passwordEncoder->EncodePassword($user, $request->request->get('MotDePasse') ));
-        // Supprimer la clef.
-        $user->setClefpublic(null);
-        // Enregistre les modifications.
-        $em = $this->GetDoctrine()->getManager();
-        $em->flush();
+            $this->addFlash('success',"Votre nouveau mot de passe est enregistré.<br>Vous pouvez vous connecter."); 
 
-
-        $this->result = ['success'=> true, 'message' => "Votre nouveau mot de passe est enregistré. Vous pouvez vous connecter."];
-        return $this->render('security/login.html.twig',['result' => $this->result]);
 
         }
 
+
         // Retourne la page MotDePasseOublie.
-        return $this->render('security/changerlemotDepasse.html.twig',['clefpublic' => $clefPublic]);
+        return $this->render('security/changerlemotDepasse.html.twig',['form' => $form->createView(), 'clefPublic' => $clefPublic]);
 
     }
 

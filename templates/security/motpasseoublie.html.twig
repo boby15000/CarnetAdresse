@@ -5,16 +5,21 @@
 {% block body %}
 	<div class ="row mt-4">
 		<div class="col-12 col-sm-12 col-md-4 offset-md-4">
-			<h1 class="text-secondary"><u><b>Mot de passe oublié</b></u></h1>
+			<h1 class="text-secondary ecritureTitre"><u><b>Mot de passe oublié</b></u></h1>
 		</div>
 	</div>
 
-	<!-- Affichage message après inscription -->
-	{% if result is defined and not result is null %}
-		<div class ="row">
-			  <div class=" col-12 col-sm-12 col-md-4 offset-md-4 alert {{ result.success ? 'alert-success' : 'alert-warning' }}" role="alert">{{ result.message }} </div>
-		</div>
+	{# Message d'information pour l'utilisateur #}
+	{% if app.request.hasPreviousSession %}
+		{% for label, messages in app.flashes(['success', 'warning']) %}
+			{% for message in messages %}
+				<div class ="row">
+					<div class="col-12 col-sm-8 col-md-4 offset-md-4 alert alert-{{ label }}" role="alert"> {{ message|raw }} </div>
+				</div> 
+			{% endfor %}
+		{% endfor %}
 	{% endif %}
+	{# Fin du message d'information pour l'utilisateur #}
 
 	<div class="col-12 col-sm-12 col-md-4 offset-md-4" style="">
 		<form action="{{ path('MotDePasseOublie') }}" method="post">
