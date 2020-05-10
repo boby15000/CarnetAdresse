@@ -10,11 +10,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\InvitationRepository")
  * @ORM\HasLifecycleCallbacks()
- * @UniqueEntity(fields= "invite", message="L'email '{{ value }}' à déjà été invité à remplir ses informations.")
+ * @UniqueEntity(fields= {"invite", "user"}, message="Vous avez déjà invité  '{{ value }}' à remplir ses informations.")
  */
 class Invitation 
 {
-    
+    const DUREE_AVANT_RELANCE_ADMIN = 1 ;// en jours
+    const DUREE_AVANT_RELANCE = 7; // en jours
     
     /**
      * @var int
@@ -73,6 +74,8 @@ class Invitation
      */
     private $user;
 
+
+    public $tag;
 
 
     /* --- DECLARATION DES PROPRIETES --- */
@@ -192,7 +195,7 @@ class Invitation
      *
      * @return self
      */
-    public function setModifierle(datetime $modifierle)
+    public function setModifierle(\datetime $modifierle)
     {
         $this->modifierle = $modifierle;
 
@@ -287,6 +290,32 @@ class Invitation
     }
 
 
+    public function getStatus(): string
+    {
+
+        //return ( $this->comfirmer && !$this->stop ) || 
+
+        if ( $this->comfirmer && !$this->stop )
+        { return 'Validé'; }
+        elseif ( !$this->comfirmer && $this->stop )
+        { return 'Bloqué'; }
+        elseif ( !$this->comfirmer && !$this->stop )
+        { return 'En Attente'; }
+        else
+        { return 'erreur'; }    
+
+    }
+
+
+    public function Relance()
+    {
+        $Aujourdhui = new \DateTime();
+        $interval = $this->getModifierle()->diff($Aujourdhui);
+        
+        return ( ( !$this->comfirmer && !$this->stop ) && 
+            ( ( $this->user->getRoles() == ['ROLE_ADMIN'] && $interval->format('%d') > self::DUREE_AVANT_RELANCE_ADMIN ) || 
+                $interval->format('%d') > self::DUREE_AVANT_RELANCE ) ) ;
+    }
 
 
 }

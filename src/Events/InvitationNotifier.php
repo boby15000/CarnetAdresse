@@ -23,8 +23,8 @@ class InvitationNotifier
 	private $router;
 	private $twig;
 	private $request;
-
 	
+
 	public function __construct(Mailjet $mailjet, UrlGeneratorInterface $router, Environment $twig, RequestStack $request_stack)
 	{
 		$this->mailjet = $mailjet;
@@ -41,7 +41,7 @@ class InvitationNotifier
 	 * @param Invitation               $Invitation  [description]
 	 * @param LifecycleEventArgs $event [description]
 	 */
-    public function SendMail(Invitation $invitation, LifecycleEventArgs $event)
+    public function SendMail(Invitation $invitation, ?LifecycleEventArgs $event)
     {
 		//dump($invitation); dump($event); die;
 
@@ -56,7 +56,8 @@ class InvitationNotifier
                         ->subject('Invitation de ' . $invitation->getUser()->getNomComplet())
                         ->html($this->twig->render('fiche\emails\invitation.email.html.twig', ['url' => $urlPage,'urlStop' => $urlStop, 'message' => $message ]));
 
-		return $this->mailjet->AddMessage($message)->Send();	
+		return $this->mailjet->AddMessage($message, true)->Send();
+
     }
 
 

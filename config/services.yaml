@@ -4,8 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
-    Email_Webmaster: '%env(EMAIL_DU_WEBMASTER)%'
+    Email_Webmaster: '%env(APP_EMAIL_DU_WEBMASTER)%'
 
 services:
     # default configuration for services in *this* file
@@ -30,10 +29,10 @@ services:
     # explicitly configure the service
     App\Service\Email\Mailjet:
         arguments:
-            $keyAPI: '%env(KEY_API)%'
-            $keyPrivate: '%env(KEY_PRIVATE)%'
-            $emailFrom: '%env(EMAIL_FROM)%'
-            $emailName: '%env(EMAIL_NAME)%'
+            $keyAPI: '%env(APP_KEY_API)%'
+            $keyPrivate: '%env(APP_KEY_PRIVATE)%'
+            $emailFrom: '%env(APP_EMAIL_FROM)%'
+            $emailName: '%env(APP_EMAIL_NAME)%'
         autowire: true
 
     

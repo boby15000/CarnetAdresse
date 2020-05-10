@@ -1,2 +1,0 @@
-#!/bin/sh
-rsync -av ./ bl44j_boby@bl44j.ftp.infomaniak.com:~/CarnetAdresse --include=vendor --exclude-from=.gitignore --exclude=".*"

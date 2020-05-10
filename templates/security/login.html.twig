@@ -47,40 +47,40 @@
 					{# Fin d'affichage des messages d'erreur pour l'identification #}
 					
 
-					  {# Message d'information pour l'utilisateur #}
-					  {% if app.request.hasPreviousSession %}
-					    {% for label, messages in app.flashes(['success', 'warning']) %}
-					      {% for message in messages %}
-					        <div class="row mt-2">
-					          <div class="col-12 col-md-4 offset-md-4 alert alert-{{ label }}" role="alert"> {{ message|raw }} </div>
-					        </div>
-					      {% endfor %}
-					    {% endfor %}
-					  {% endif %}
-					  {# Fin du message d'information pour l'utilisateur #}
+				  {# Message d'information pour l'utilisateur #}
+				  {% if app.request.hasPreviousSession %}
+				    {% for label, messages in app.flashes(['success', 'warning']) %}
+				      {% for message in messages %}
+				        <div class="row mt-2">
+				          <div class="col-12 col-md-4 offset-md-4 alert alert-{{ label }}" role="alert"> {{ message|raw }} </div>
+				        </div>
+				      {% endfor %}
+				    {% endfor %}
+				  {% endif %}
+				  {# Fin du message d'information pour l'utilisateur #}
 
 			    </h5>
 			    <div class="card-text">
 					{# Début du formulaire #}
 					<form action="{{ path('login') }}" method="post">
-						<div class="form-group">
-						    <label for="username">Email</label>
-								<input type="email" value="{{ last_Username is defined ? last_Username }}" class="form-control" id="username" aria-describedby="emailHelp" placeholder="Votre email" name="email">
-						</div>
-						<div class="form-group">
-						    <label for="password">Mot de Passe</label>
-						    <input type="password" class="form-control" id="password" placeholder="Votre mot de passe" name="password">
-						    <a href="{{ path('MotDePasseOublie') }}">Mot de passe oublié</a>
-						</div>
-						<div class="form-group form-check">
-						    <input type="checkbox" class="form-check-input" id="RememberMe">
-						    <label class="form-check-label" for="RememberMe">Se souvenir de moi</label>
-						</div>
-						<div class="form-group text-right">
-							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-							<button type="submit" class="btn btn-secondary text-right">Se connecter</button>
-						</div>
-					</form>
+	                    <div class="form-group">
+	                        <label for="username">Email</label>
+	                        <input type="email" value="{{ last_Username is defined ? last_Username }}" class="form-control" id="username" aria-describedby="emailHelp" placeholder="Votre email" name="email">
+	                    </div>
+	                    <div class="form-group">
+	                        <label for="password">Mot de Passe</label>
+	                        <input type="password" class="form-control" id="password" placeholder="Votre mot de passe" name="password">
+	                        <a href="{{ path('MotDePasseOublie') }}">Mot de passe oublié</a>
+	                    </div>
+	                    <div class="custom-control custom-switch">
+	                        <input type="checkbox" class="custom-control-input" id="RememberMe">
+	                        <label class="custom-control-label" for="RememberMe">Se souvenir de moi</label>
+	                    </div>
+	                    <div class="form-group text-right">
+	                      <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+	                      <button type="submit" class="btn btn-secondary text-right">Se connecter</button>
+	                    </div>
+                 	</form>
 					{# Fin du formulaire #}
 			    </div>
 			  </div>

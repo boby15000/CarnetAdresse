@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\ChangeMotDePasseType;
 use App\Form\ContactType;
+use App\Form\IdentificationType;
 use App\Form\UserType;
 use App\Service\Email\Mailjet;
 use App\Service\Email\NewMessage;
@@ -30,9 +31,12 @@ class SecurityController extends AbstractController
      */
     public function home()
     {
+        
         // Supprime les comptes inactif supérieur à 1 jour.
         $this->GetDoctrine()->getRepository(User::class)->DeleteInactif();
+    
         return $this->redirectToRoute('login');
+
     }
 
 
@@ -88,14 +92,15 @@ class SecurityController extends AbstractController
      * @Route("/login", name="login")
      * @return Symfony\Component\HttpFoundation\Response;
      */
-    public function login(AuthenticationUtils $AuthenticationUtils)
+    public function login(Request $request, AuthenticationUtils $AuthenticationUtils)
     {
-        // Récupére les erreurs probable de l'authentification.
+    
+        if ($this->getUser())
+        {
+            return $this->redirectToRoute('Fiche.voirTout', ['Letter'=> 'A']);
+        }
+       
         $error = $AuthenticationUtils->getLastAuthenticationError();
-
-        // Si authentifier, on redirige vers la liste des contacts.
-        if ( $this->getUser() !== null ) 
-        { return $this->redirectToRoute('Fiche.voirTout', ['Letter' => 'A']); }
 
         // Récupère le dernier Identifiant saisi par l'utilisateur.
         $lastUsername = $AuthenticationUtils->getLastUsername();
@@ -119,13 +124,13 @@ class SecurityController extends AbstractController
      */
     public function Inscription(Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {
+ 
         $user = new User(); // initiale un nouvel utilisateur.
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
         // Controle si le formulaire est émis.
         if ($form->isSubmitted() && $form->isValid()) 
         {
-            dump($user);
             // Encode le mot de passe.
             $user->setMotdepasse($passwordEncoder->EncodePassword($user, $user->getMotdepasse() )); 
             // Enregistre le nouvel utilisateur.
@@ -165,12 +170,11 @@ class SecurityController extends AbstractController
         
     	// On récupére l'utilisateur
 		$user = $this->GetDoctrine()->getRepository(User::class)->findOneBy(['clefpublic' => $clefPublic]);
-
 		// Controle que l'utilisateur n'est pas null.
 		if ( $user === null )
 		{ 
-			$this->result = ['success'=> false, 'message' => "Impossible d'identifier le compte de l'utilisateur."]; 
-			return $this->render('security/login.html.twig',['result' => $this->result]);
+			$this->addFlash('warning',"Impossible d'identifier le compte de l'utilisateur."); 
+			return $this->render('security/login.html.twig');
 		}
 
 		// Active le compte.
@@ -181,7 +185,7 @@ class SecurityController extends AbstractController
 		$em = $this->GetDoctrine()->getManager();
 		$em->flush();
 
-        $this->addFlash('success',"Votre compte est activé.");
+        $this->addFlash('success',"Votre compte est activé.<br> Vous pouvez vous connecter.");
 
         // Retourne la page login.
         return $this->render('security/login.html.twig');
@@ -264,6 +268,7 @@ dump($user);
         {
             // On récupére les données du formulaire et on initie Doctrine.
             $credentials = $form->getData();
+    
             // On récupére l'utilisateur en fonction de la Clef Publique.
             $user = $this->GetDoctrine()->getRepository(User::class)->findOneBy(['clefpublic' => $clefPublic]);
 
@@ -275,7 +280,7 @@ dump($user);
             }
 
             // Change le mot de passe.
-            $user->setMotdepasse($passwordEncoder->EncodePassword($user, $rcredentials('MotDePasse') ));
+            $user->setMotdepasse($passwordEncoder->EncodePassword($user, $credentials['motdepasse'] ));
             // Supprimer la clef.
             $user->setClefpublic(null);
             // Enregistre les modifications.
@@ -283,13 +288,13 @@ dump($user);
             $em->flush();
 
             $this->addFlash('success',"Votre nouveau mot de passe est enregistré.<br>Vous pouvez vous connecter."); 
-
+            return $this->render('security/login.html.twig');
 
         }
 
 
         // Retourne la page MotDePasseOublie.
-        return $this->render('security/changerlemotDepasse.html.twig',['form' => $form->createView(), 'clefPublic' => $clefPublic]);
+        return $this->render('security/changerlemotdepasse.html.twig',['form' => $form->createView(), 'clefPublic' => $clefPublic]);
 
     }
 

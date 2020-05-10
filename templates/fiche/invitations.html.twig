@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+    {# Titre de la page #}
+    <div class="row mt-4 text-center">
+     	<h1 class="col-12 text-secondary ecritureTitre"><u><b>Mes invitations</b></u></h1>
+    </div>
+    {# ---------------- #}
+
+    {# Texte de la page #}
+    <div class="row mt-4">
+      <p class="col-12 col-md-5 offset-md-4">Vous pouvez consulter le suivi de vos invitations. Seul les invitations "en attente" de plus de 7 jours peuvent être relancé.</p>
+    </div>
+    {# ---------------- #}
+
+
+   {% if invitations | length > 0 %}
+
+  	    {# Message d'information pour l'utilisateur #}
+        {% if app.request.hasPreviousSession %}
+          {% for label, messages in app.flashes(['success', 'warning']) %}
+            {% for message in messages %}
+              <div class="row mt-2">
+                <div class="col-12 col-md-5 offset-md-4 alert alert-{{ label }}" role="alert"> {{ message|raw }} </div>
+              </div>
+            {% endfor %}
+          {% endfor %}
+        {% endif %}   
+        {# Fin du message d'information pour l'utilisateur #}
+
+
+  		{# Affichage des Invitations #}
+  		<div class="row mt-2">
+        <div class="col-12 col-md-5 offset-md-4">
+            <div class="list-group">
+          		{% for invitation in invitations %}
+                {% set url = 'href=' ~ path('Fiche.relance', {'id': invitation.id}, false) ~ '' %}
+                <a {{ invitation.Relance ? url : " " }} class="list-group-item list-group-item-action">
+                  {{ invitation.invite }} <span class="badge badge-{{ color(invitation.getStatus) }}"> {{ invitation.getStatus }} </span>
+                </a>
+  				    {% endfor %}
+            </div>
+  			</div>
+      </div>
+  		{# Fin d'affichage des Invitations #}
+
+	{% else %}
+
+
+		<div class="row mt-2">
+			<div class="col-12 col-md-4 offset-md-4">Aucunes invitations actuellement</span></div>
+		</div>
+
+       
+	{% endif %}
+
+{% endblock %}

@@ -16,7 +16,7 @@ use App\Service\Email\Message;
  */
 class Mailjet 
 {
-
+	private $id;
 	private $mj;
 	private $indiceMessage;
 	private $bodyMessage;
@@ -32,6 +32,7 @@ class Mailjet
 
 	public function __construct(string $keyAPI, string $keyPrivate, string $emailFrom, ?string $emailName)
 	{
+		$this->id = \rand(5, 15);
 		$this->mj = new Client($keyAPI, $keyPrivate,true,['version' => 'v3.1']);
 		$this->emailFrom = $emailFrom;
 		$this->emailName = $emailName;
@@ -45,9 +46,9 @@ class Mailjet
 
 
 
-	public function AddMessage(Message $message): self
+	public function AddMessage(Message $message, $incrementation = false): self
 	{
-		if ( $this->bodyMessage == null )
+		if ( $this->bodyMessage == null || $incrementation )
 		{ $this->indiceMessage = 0; }
 		else
 		{ $this->indiceMessage++ ; }	

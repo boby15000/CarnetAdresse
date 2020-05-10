@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Fiche;
 use App\Entity\Invitation;
 use App\Entity\User;
+use App\Events\InvitationNotifier;
 use App\Form\FicheType;
 use App\Form\InvitationType;
 use Knp\Component\Pager\PaginatorInterface;
@@ -153,32 +154,33 @@ class FicheController extends AbstractController
             // On récupére les données du formulaire et on initie Doctrine.
             $credentials = $form->getData();
             $em = $this->GetDoctrine()->GetManager(); 
-
+            $nbrErrors = 0;
             // On parcour le tableau de Destinataires pour créer les invitations et le enregistrer. 
             foreach ($credentials['destinataires'] as $email) 
             {
-
+                
                 $invitation = (new Invitation())
                 ->setInvite($email)
                 ->setMessage($credentials['message'])
                 ->setUser($this->getUser());
+                
 
                 // Validation de l'objet Invitation
                 $errors = $validator->validate($invitation);
-
+                $nbrErrors += count($errors);
+             
                 if ( count($errors) > 0 )
                 { 
                   foreach ($errors as $error) 
                   { $this->addFlash('warning', $error->getMessage() ); }
-              }
+                }
                 else
                 { $em->persist($invitation); }
-
             }
 
             $em->flush();
-
-            if ( count($errors) != count($credentials['destinataires']) )
+            
+            if ( count($credentials['destinataires']) < $nbrErrors )
             { $this->addFlash('success',"L'invitation est bien envoyé à vos destinataires."); }
         }
 
@@ -266,6 +268,54 @@ class FicheController extends AbstractController
 
         // Retourne la vue des contacts.
         return $this->render('fiche/invitation_add.html.twig', ['form' => $form->createView()]);
+    }
+
+
+
+
+/**************************************************************************************************************************/
+
+
+
+    /**
+     * @Route("/Fiche/Invitations", name="Fiche.Invitations")
+     */
+    public function Invitations(Request $request)
+    {
+        $invitations = $this->GetDoctrine()->getRepository(Invitation::class)->findBy(['user' => $this->getUser()]);
+
+        // Retourne la vue des contacts.
+        return $this->render('fiche/invitations.html.twig', ['invitations' => $invitations]);
+
+    }
+
+
+
+/**************************************************************************************************************************/
+    
+
+    /**
+     * @Route("/Fiche/Relance-{id}", name="Fiche.relance", requirements={"id"="\d*"})
+     */
+    public function Relance(Invitation $invitation, InvitationNotifier $invitationNotifier)
+    {   
+        if ( $invitationNotifier->SendMail($invitation, null) )
+        {
+            $invitation->setModifierle(new \Datetime());
+            $em = $this->GetDoctrine()->GetManager(); 
+            $em->persist($invitation);
+            $em->flush();
+
+            // Message flash de success.
+            $this->addFlash('success',"L'invitation est envoyé à " . $invitation->getInvite() );    
+        }
+        else
+        {
+            // Message flash de success.
+            $this->addFlash('warning',"L'invitation de " . $invitation->getInvite() . " a échoué." );     
+        }
+
+        return $this->redirectToRoute('Fiche.Invitations');
     }
 
 }

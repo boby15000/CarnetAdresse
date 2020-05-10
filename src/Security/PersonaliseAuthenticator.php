@@ -47,6 +47,7 @@ class PersonaliseAuthenticator extends AbstractFormLoginAuthenticator implements
 
     public function getCredentials(Request $request)
     {
+        
         $credentials = [
             'email' => $request->request->get('email'),
             'password' => $request->request->get('password'),

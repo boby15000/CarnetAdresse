@@ -13,12 +13,14 @@ class Message
 {
 	const PATERN_EMAIL = "%^[^\W][a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\@[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*\.[a-zA-Z]{2,4}$%";
 	
+	private $id;
 	private $indiceTo = 0 ;
 	private $message;
 	
 
 	public function __construct($emailFrom, $emailName)
 	{
+		$this->id = \rand(5, 15);
 		$this->from( $emailFrom,  $emailName );
 	}
 
